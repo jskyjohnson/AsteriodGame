@@ -67,7 +67,6 @@ public class SpaceMap extends JPanel {
 		setPreferredSize(new Dimension(SIZE_X, SIZE_Y));
 		setBackground(Color.BLACK);
 		
-		
 		//Generates Stars
 		starlist = new ArrayList<Star>();
 		for(int i = 0; i < NUMBER_STARS; i++){		
@@ -79,9 +78,8 @@ public class SpaceMap extends JPanel {
 			
 			Star startemp = new Star(a,b,c,d,e);
 			starlist.add( startemp);
-			
 		}
-		System.out.println(starlist.size());
+		
 	}
 	
 	/*
@@ -100,11 +98,20 @@ public class SpaceMap extends JPanel {
 			i.drawStar(gg);
 		}
 		for(Actor i : dictator.actor){
-			drawActor(gg, i);
+			Movement currPosition =i.getPosition();
+			drawActor(gg, i, currPosition.getX(), currPosition.getY());
 		}
+		
 	}
-	private void drawActor(Graphics2D g2d, Actor actor)
+	private void drawActor(Graphics2D g2d, Actor actor,double x, double y)
 	{
+		//DRAWING STUFF NOT DONE
+		g2d.translate(x, y);
+		double rotation = actor.getRotation();
+		if(rotation != 0.0f){
+			g2d.rotate(actor.getRotation());
+		}
+		actor.draw(g2d, dictator);
 		
 	}
 }

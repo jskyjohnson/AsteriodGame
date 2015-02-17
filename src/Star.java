@@ -21,5 +21,8 @@ public class Star {
 		gg.setColor(color);
 		gg.drawOval((int)x,(int) y, (int) size,(int) size);
 	}
+	void update(){
+		
+	}
 	
 }
