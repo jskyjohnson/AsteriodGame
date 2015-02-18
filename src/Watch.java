@@ -1,5 +1,7 @@
 
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -34,9 +36,9 @@ public class Watch  {
 			this.excessTicks = change%ticks;
 		}
 		this.previous = curr;
-		
+
 	}
-	
+
 	public void reset(){
 		this.passedTicks =0;
 		this.excessTicks = 0.0f;

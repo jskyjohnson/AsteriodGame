@@ -43,6 +43,10 @@ public abstract class Actor {
 		this.rotation %= Math.PI*2;
 	}
 	
+	public void setRotation(double angle){
+		rotation = angle;
+	}
+	
 	public double getRotation(){
 		return rotation;
 	}

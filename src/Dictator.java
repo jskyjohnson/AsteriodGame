@@ -5,6 +5,9 @@ import java.util.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.util.List;
 
 import javax.swing.*;
@@ -15,7 +18,7 @@ import javax.swing.*;
  * @author Sky Johnson
  * 
  */
-public class Dictator extends JFrame {
+public class Dictator extends JFrame{
 	// serialID
 
 	/*
@@ -100,6 +103,8 @@ public class Dictator extends JFrame {
 	 * Size of jframe y
 	 */
 	public final int SIZE_Y = 600;
+	
+	public Mouse mouse;
 
 	/*
 	 * Player(s?)
@@ -118,6 +123,7 @@ public class Dictator extends JFrame {
 	public Dictator() {
 		// initialize instance variables
 		super();
+		mouse = new Mouse();
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
@@ -125,7 +131,16 @@ public class Dictator extends JFrame {
 		// create SpaceMap and set Window and jazz
 		add(this.Constellation = new SpaceMap(this), BorderLayout.CENTER);
 		setContentPane(Constellation);
+		
+		addMouseMotionListener(new MouseAdapter() {
+		    public void mouseMoved(MouseEvent e) {
+		        mouse.update(e.getPoint());
+		    }
+		    
+		});
+		
 		// Add Key Listener, only modifies player
+		
 		addKeyListener(new KeyAdapter() {
 
 			// key mapping for press
@@ -343,8 +358,8 @@ public class Dictator extends JFrame {
 	 */
 	public static void main(String[] args) {
 
-		Dictator mao = new Dictator();
-		mao.startGame();
+		Dictator hitlerAndy = new Dictator();
+		hitlerAndy.startGame();
 
 	}
 

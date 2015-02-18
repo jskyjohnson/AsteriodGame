@@ -1,4 +1,3 @@
-
 import java.awt.*;
 
 /*
@@ -23,7 +22,7 @@ public class Player extends Actor {
 		super(new Position(d.SIZE_X / 2.0, d.SIZE_Y / 2.0), new Movement(0.0,
 				0.0), 10.0);
 		speed = 0;
-		rotation = 3 * Math.PI / 2;
+		rotation = 0;
 		this.frame = 0;
 
 		thrustingUp = false;
@@ -35,9 +34,26 @@ public class Player extends Actor {
 	public void update(Dictator d) {
 		this.frame++;
 		checkAcceleration();
-
 		position.add(velocity);
+		rotationization(d.mouse.getPoint());
 		super.update(d);
+
+	}
+	public void rotationization(Point e){
+		double firstx = position.x;
+		double firsty = position.y;
+		
+		double tox = e.getX();
+		double toy = e.getY();
+		
+		double ydiff = toy-firsty;
+		double xdiff = tox-firstx;
+		if(xdiff<0){
+			super.setRotation(Math.atan(ydiff/xdiff)-Math.PI);
+		}else{
+			super.setRotation(Math.atan((ydiff/xdiff)));
+		}
+		
 		
 	}
 
@@ -50,8 +66,8 @@ public class Player extends Actor {
 	public Position getPosition() {
 		return super.getPosition();
 	}
-	
-	public int getFrame(){
+
+	public int getFrame() {
 		return frame;
 	}
 
@@ -109,15 +125,15 @@ public class Player extends Actor {
 		}
 		if (thrustingDown) {
 			velocity.addY(ACCELERATION);
-		} 
+		}
 		if (thrustingLeft) {
 			velocity.addX(-ACCELERATION);
 		}
 		if (thrustingRight) {
 			velocity.addX(ACCELERATION);
-		} 
-			
-		velocity.scale(.993);
+		}
+
+		velocity.scale(0.993);
 
 	}
 
