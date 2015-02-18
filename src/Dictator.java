@@ -1,3 +1,5 @@
+
+
 import java.time.Clock;
 import java.util.*;
 import java.awt.*;
@@ -19,7 +21,7 @@ public class Dictator extends JFrame {
 	/*
 	 * Serial Version
 	 */
-	// private static final long serialVersionUID = -3535839203565039672L;
+	 private static final long serialVersionUID = -3535839203565039672L;
 
 	// Threads
 	/*
@@ -89,11 +91,20 @@ public class Dictator extends JFrame {
 	 * Universal Random
 	 */
 	private Random Party = new Random();
+	
+	/*
+	 * Size of jframe x
+	 */
+	public final int SIZE_X = 600;
+	/*
+	 * Size of jframe y
+	 */
+	public final int SIZE_Y = 600;
 
 	/*
 	 * Player(s?)
 	 */
-	private Player StarCaptain;
+	protected Player StarCaptain;
 
 	/*
 	 * World Map entitiy
@@ -119,53 +130,64 @@ public class Dictator extends JFrame {
 
 			// key mapping for press
 			public void keyPressed(KeyEvent e) {
-				switch (e.getKeyCode()) {
-				// Sets Thrusting Directions
-				case KeyEvent.VK_A:
-					if (!checkForRestart()) {
-						StarCaptain.rotateLeft(true);
+				
+				if(e.getKeyChar()=='a'){
+					if (!checkForRestart()&& !StarCaptain.getThrustingLeft()) {
+						StarCaptain.thrustingLeft(true);
 					}else{
-						StarCaptain.rotateLeft(false);
+						StarCaptain.thrustingLeft(false);
 					}
-					break;
-				case KeyEvent.VK_D:
-					if (!checkForRestart()) {
-						StarCaptain.rotateRight(true);
+				}
+				if(e.getKeyChar()=='d'){
+					if (!checkForRestart() && !StarCaptain.getThrustingRight()) {
+						StarCaptain.thrustingRight(true);
 					}else{
-						StarCaptain.rotateRight(false);
+						StarCaptain.thrustingRight(false);
 					}
-					break;
-				case KeyEvent.VK_S:
-					if (!checkForRestart()) {
-						StarCaptain.thrustDown(true);
+				}
+				if(e.getKeyChar()=='s'){
+					if (!checkForRestart() && !StarCaptain.getThrustingDown()) {
+						StarCaptain.thrustingDown(true);
 					}else{
-						StarCaptain.thrustDown(false);
+						StarCaptain.thrustingDown(false);
 					}
-					break;
-				case KeyEvent.VK_W:
-					if (!checkForRestart()) {
-						StarCaptain.thrustUp(true);
+				}
+				if(e.getKeyChar()=='w'){
+					if (!checkForRestart() && !StarCaptain.getThrustingUp()) {
+						StarCaptain.thrustingUp(true);
+						
 					}else{
-						StarCaptain.thrustUp(false);
+						StarCaptain.thrustingUp(false);
 					}
-					break;
-
-				case KeyEvent.VK_P:
+				}
+				if(e.getKeyChar()=='p'){
 					if (!checkForRestart()) {
 						if (!paused) {
 							pause();
 						}
 					}
-				default:
-					checkForRestart();
-					break;
-
 				}
+			
 			}
 
 			// key mapping for release
 			public void keyReleased(KeyEvent e) {
-
+				
+				if(e.getKeyChar()=='a'){
+					StarCaptain.thrustingLeft(false);
+				}
+				if(e.getKeyChar()=='w'){
+					StarCaptain.thrustingUp(false);
+				}
+				if(e.getKeyChar()=='s'){
+					StarCaptain.thrustingDown(false);
+				}
+				if(e.getKeyChar()=='d'){
+					StarCaptain.thrustingRight(false);
+				}
+				
+				
+				
 			}
 
 		});
@@ -245,7 +267,7 @@ public class Dictator extends JFrame {
 		this.Party = new Random();
 		this.actor = new ArrayList();
 		this.toAdActor = new ArrayList();
-		this.StarCaptain = new Player();
+		this.StarCaptain = new Player(this);
 
 		restartGame();
 
@@ -306,7 +328,7 @@ public class Dictator extends JFrame {
 		for(Actor i : actor){
 			i.update(this);
 		}
-		StarCaptain.update(null);
+		StarCaptain.update(this);
 	}
 
 	/*
@@ -321,21 +343,10 @@ public class Dictator extends JFrame {
 	 */
 	public static void main(String[] args) {
 
-		Dictator gurf = new Dictator();
-		gurf.startGame();
+		Dictator mao = new Dictator();
+		mao.startGame();
 
 	}
 
-	/**
-	 * An example of a method - replace this comment with your own
-	 * 
-	 * @param y
-	 *            a sample parameter for a method
-	 * @return the sum of x and y
-	 */
-	public int sampleMethod(int y) {
-		// put your code here
-		return 4;
-	}
 
 }

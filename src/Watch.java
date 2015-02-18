@@ -1,3 +1,5 @@
+
+
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -35,16 +37,15 @@ public class Watch  {
 		
 	}
 	
-	public void setTicks(float toTicks){
+	public void reset(){
 		this.passedTicks =0;
 		this.excessTicks = 0.0f;
-		this.ticks = (1.0f / toTicks)*1000;
-		this.isPaused = false;
-	}
-	
-	public void reset(){
 		this.previous = getCurrentTime();
 		timePassed = 0;
+	}
+	
+	public void setTicks(float tickss){
+		this.ticks = (1.0f/tickss)*1000;
 	}
 	
 	public void setPaused(boolean paused){

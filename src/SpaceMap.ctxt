@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.params=dic
+comment0.target=SpaceMap(Dictator)
+comment0.text=\r\n\ Constructor\ for\ SpaceMap\r\n
+comment1.params=g
+comment1.target=void\ paintComponent(java.awt.Graphics)
+comment1.text=\r\n\ (non-Javadoc)\r\n\ @see\ javax.swing.JComponent\#paintComponent(java.awt.Graphics)\r\n
+comment2.params=g2d\ actor\ a
+comment2.target=void\ drawActor(java.awt.Graphics2D,\ Actor,\ Position)
+numComments=3
