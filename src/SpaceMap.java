@@ -1,5 +1,7 @@
 
 
+
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -35,19 +37,11 @@ public class SpaceMap extends JPanel {
 	 */
 	private static final Font SUBTITLE_FONT = new Font("Dialog", Font.PLAIN, 15);
 	
-	/*
-	 * Number of stars to be rendered in the frame
-	 */
-	private int NUMBER_STARS = 60;
 	
-	/*
-	 * Stars arraylist
-	 */
-	private ArrayList<Star> starlist;
 	/*
 	 * Random
 	 */
-	private Random rand = new Random();
+	
 	/*
 	 * dictator
 	 */
@@ -62,17 +56,6 @@ public class SpaceMap extends JPanel {
 		setPreferredSize(new Dimension(dic.SIZE_X, dic.SIZE_Y));
 		setBackground(Color.BLACK);
 		
-		//Generates Stars
-		starlist = new ArrayList<Star>();
-		for(int i = 0; i < NUMBER_STARS; i++){		
-			double a = (rand.nextDouble()*dic.SIZE_X);
-			double b = (rand.nextDouble()*dic.SIZE_Y);
-			double c = rand.nextDouble();
-			double e = 1;
-			
-			Star startemp = new Star(a,b,c,e);
-			starlist.add( startemp);
-		}
 		
 	}
 	
@@ -88,7 +71,10 @@ public class SpaceMap extends JPanel {
 		gg.setColor(Color.WHITE);
 	
 		//draws stars
-		for(Star i : starlist){
+		
+		for(Star i : dictator.starlist){
+			i.update();
+			
 			i.drawStar(gg);
 			
 		}

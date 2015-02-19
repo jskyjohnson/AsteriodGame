@@ -1,3 +1,5 @@
+
+
 import java.awt.*;
 
 /*
@@ -141,6 +143,8 @@ public class Player extends Actor {
 
 		// TODO add check for pause, or thrust, or what ever, i don't really
 		// know
+		
+		g.setColor(Color.WHITE);
 		if (true) {
 			g.drawLine(-10, -8, 10, 0);
 			g.drawLine(-10, 8, 10, 0);

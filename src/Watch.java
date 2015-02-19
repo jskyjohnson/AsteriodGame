@@ -1,5 +1,6 @@
 
 
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.Clock;
@@ -19,15 +20,20 @@ public class Watch  {
 	
 	private float excessTicks;
 	
+	
+	
 	private boolean isPaused;
 
 	public Watch(float ticks){
 		setTicks(ticks);
 		reset();
 		
+		
 	}
 	
 	public void update(){
+		
+		
 		long curr = getCurrentTime();
 		float change = (float)(curr - previous)+excessTicks;
 		

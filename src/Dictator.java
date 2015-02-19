@@ -41,6 +41,8 @@ public class Dictator extends JFrame{
 	 * Frames per second limit
 	 */
 	private static final int FRAMES = 60;
+	
+	private int NUMBER_STARS = 100;
 
 	// Game States
 	/*
@@ -86,6 +88,14 @@ public class Dictator extends JFrame{
 	 * ArrayList of Actor Objects that need to be added to the game
 	 */
 	public List<Actor> toAdActor;
+	
+	public String thissong;
+	
+	protected SongListener songlistener;
+	
+	protected ArrayList<String> song;
+	
+	protected ArrayList<Star> starlist;
 	/*
 	 * Clock
 	 */
@@ -116,13 +126,29 @@ public class Dictator extends JFrame{
 	 */
 
 	private SpaceMap Constellation;
+	
+	private Random rand = new Random();
 
+	
+	public int framesSoFar;
 	/**
 	 * Constructor for objects of class Dictator
 	 */
 	public Dictator() {
 		// initialize instance variables
 		super();
+		
+		framesSoFar = 0;
+		
+		//SONG Analyzer Now!!
+		thissong = "test.mp3";
+		
+		songlistener = new SongListener(thissong);
+		
+		song = songlistener.generate();
+		
+		System.out.println(song);
+		
 		mouse = new Mouse();
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -283,6 +309,11 @@ public class Dictator extends JFrame{
 		this.actor = new ArrayList();
 		this.toAdActor = new ArrayList();
 		this.StarCaptain = new Player(this);
+		this.starlist = new ArrayList<Star>();
+		
+		
+		
+		
 
 		restartGame();
 
@@ -291,6 +322,19 @@ public class Dictator extends JFrame{
 		// this.Constellation = new SpaceMap(this);
 		isGame = true;
 		gameOver = false;
+		
+		//Starlist Generation
+		for(int i = 0; i < NUMBER_STARS; i++){		
+			double a = (rand.nextDouble()*SIZE_X);
+			double b = (rand.nextDouble()*SIZE_Y);
+			double c = rand.nextDouble();
+			double e = 1;
+			int group = rand.nextInt(255);
+			
+			Star startemp = new Star(a,b,c,e,group);
+			starlist.add( startemp);
+		}
+		
 		// Game Loop
 		while (isGame) {
 			long start = System.nanoTime();
@@ -299,6 +343,7 @@ public class Dictator extends JFrame{
 			StarTimer.update();
 			for (int i = 0; i < 5 && StarTimer.hasPassedTicks(); i++) {
 				updateGame();
+				
 			}
 			// Render
 			Constellation.repaint();
@@ -339,6 +384,9 @@ public class Dictator extends JFrame{
 	private void updateGame() {
 		
 		resetActorLists();
+		
+		framesSoFar++;
+		//ADD FRAMES SO FAR CHECKER HERE, SO THAT IF PAST SONG LIMIT GAME STOPS
 		
 		for(Actor i : actor){
 			i.update(this);

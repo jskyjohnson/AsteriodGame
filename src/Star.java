@@ -11,12 +11,23 @@ public class Star {
 	private int colorDir = 1;
 	private double size;
 	private double frame;
-	public Star(double mx, double my, double mbrightness, double s){
+	private int group;
+	
+	
+	private boolean rup;
+	private boolean gup;
+	private boolean bup;
+	public Star(double mx, double my, double mbrightness, double s, int group){
 		x = mx;
 		y = my;
 		brightness = mbrightness;
-		color = Color.WHITE;
+		color = new Color(group, group, group);
 		size = s;
+		this.group = group;
+		
+		rup = false;
+		gup = false;
+		bup = false;
 	}
 	void drawStar(Graphics2D gg){
 		update();
@@ -26,23 +37,59 @@ public class Star {
 	void update(){
 		twinkle();
 	}
-	private Color twinkle(){
+	private void twinkle(){
 		Color k = color;
 		int r = k.getRed();
-		if(r+colorDir>=255){
-			colorDir = -1;
-			r = r+colorDir;
-		}else if(r+colorDir<=0){
-			r = r-colorDir;
-			colorDir = 1;
+		if(rup){
+			if(r+1 >= 255){
+			r -= 1;
+			rup = false;
+			}else{
+				r+=1;
+			}
+		}else if(!rup){
+			if(r-1 <= 0){
+				r += 1;
+				rup = true;
+				}else{
+					r-=1;
+				}
 		}
 		
 		int g = k.getGreen();
-		g = g+colorDir;
+		if(gup){
+			if(g+1 >= 255){
+			g -= 1;
+			gup = false;
+			}else{
+				g+=1;
+			}
+		}else if(!gup){
+			if(g-1 <= 0){
+				g += 1;
+				gup = true;
+				}else{
+					g-=1;
+				}
+		}
 		int b = k.getRed();
-		b = b+colorDir;
+		if(bup){
+			if(b+1 >= 255){
+			b -= 1;
+			bup = false;
+			}else{
+				b+=1;
+			}
+		}else if(!bup){
+			if(b-1 <= 0){
+				b += 1;
+				bup = true;
+				}else{
+					b-=1;
+				}
+		}
 		Color f = new Color(r,g,b);
-		return f;
+		color = f;
 	}
 	
 }
