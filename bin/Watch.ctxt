@@ -1,0 +1,20 @@
+#BlueJ class context
+comment0.params=ticks
+comment0.target=Watch(float)
+comment1.params=
+comment1.target=void\ update()
+comment2.params=toTicks
+comment2.target=void\ setTicks(float)
+comment3.params=
+comment3.target=void\ reset()
+comment4.params=paused
+comment4.target=void\ setPaused(boolean)
+comment5.params=
+comment5.target=boolean\ isPaused()
+comment6.params=
+comment6.target=boolean\ hasPassedTicks()
+comment7.params=
+comment7.target=boolean\ peekElapsedTick()
+comment8.params=
+comment8.target=long\ getCurrentTime()
+numComments=9

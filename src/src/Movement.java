@@ -24,6 +24,10 @@ public class Movement {
 		this.x += vec.x;
 		this.y += vec.y;
 	}
+	
+	public Movement getMovement(){
+		return this;
+	}
 
 	public double getRotation() {
 		return 1.0;

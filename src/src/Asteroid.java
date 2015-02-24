@@ -4,20 +4,19 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
+import java.util.Random;
 
 public class Asteroid extends Actor {
 	
 	private int frame;
 	
-	public final Polygon polygon;
+	public Polygon polygon;
 	
+	private Random rand = new Random();
 
 	public Asteroid(Dictator d) {
-		super(new Position(0.0, 0.0), new Movement(0.0,0.0), 10);
-		Position temp = new Position(4.0, 40.0);
-		Movement tempv = new Movement(0.0,0.0);
-		this.getPosition().set(temp);
-		this.getVelocity().set(tempv);
+		super(new Position(d.rand.nextInt(d.SIZE_X), d.rand.nextInt(d.SIZE_Y)), new Movement(d.rand.nextDouble()*2-1,d.rand.nextDouble()*2-1), 10);
+		System.out.println(this.getPosition().toString());
 		
 		
 		this.polygon = makeAsteroid(radius);
@@ -64,7 +63,6 @@ public class Asteroid extends Actor {
 	
 	public void draw(Graphics2D g, Dictator d){
 		g.setColor(Color.RED);
-		g.translate(0, 0);
 		g.drawPolygon(polygon);;
 		
 	}

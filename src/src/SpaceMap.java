@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -71,16 +72,20 @@ public class SpaceMap extends JPanel {
 		gg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		gg.setColor(Color.WHITE);
 	
+		AffineTransform identity = gg.getTransform();
 		//draws stars
 		
 		for(Star i : dictator.starlist){
+			gg.setTransform(identity);
 			i.drawStar(gg);
 			
 		}
 		for(Actor i : dictator.asteroids){
+			gg.setTransform(identity);
 			Position currPosition =i.getPosition();
 			drawActor(gg, i, currPosition);
 		}
+		gg.setTransform(identity);
 		drawActor(gg, dictator.StarCaptain, dictator.StarCaptain.getPosition());
 		
 	}
@@ -93,7 +98,6 @@ public class SpaceMap extends JPanel {
 			g2d.rotate(actor.getRotation());
 		}
 		actor.draw(g2d, dictator);
-		
 	}
 	
 }

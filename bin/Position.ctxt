@@ -1,0 +1,6 @@
+#BlueJ class context
+comment0.params=x\ y
+comment0.target=Position(double,\ double)
+comment1.params=a
+comment1.target=void\ add(Movement)
+numComments=2

@@ -300,7 +300,7 @@ public class Dictator extends JFrame{
 			Star startemp = new Star(a,b,c,group);
 			starlist.add( startemp);
 		}
-		for(int i = 0; i < 5; i++){
+		for(int i = 0; i < 10; i++){
 			Asteroid asteroid = new Asteroid(this);
 			asteroids.add(asteroid);
 		}

@@ -48,4 +48,8 @@ public class Position {
 		
 		y += a;
 	}
+	public String toString(){
+		
+		return x+" "+y;
+	}
 }

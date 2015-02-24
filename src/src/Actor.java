@@ -58,6 +58,9 @@ public abstract class Actor {
 	public Movement getVelocity(){
 		return velocity;
 	}
+	public Movement getMovement(){
+		return velocity;
+	}
 	
 	public void setPosition(Position a){
 		position = a;

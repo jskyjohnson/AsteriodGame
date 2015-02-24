@@ -1,0 +1,21 @@
+#BlueJ class context
+comment0.params=position\ velocity\ radius
+comment0.target=Actor(Position,\ Movement,\ double)
+comment1.params=amount
+comment1.target=void\ rotate(double)
+comment1.text=\r\n\ @param\ amount\r\n
+comment2.params=
+comment2.target=double\ getRotation()
+comment3.params=
+comment3.target=Position\ getPosition()
+comment4.params=
+comment4.target=Movement\ getVelocity()
+comment5.params=
+comment5.target=boolean\ removeCheck()
+comment6.params=
+comment6.target=boolean\ remove()
+comment7.params=d
+comment7.target=void\ update(Dictator)
+comment8.params=g\ d
+comment8.target=void\ draw(java.awt.Graphics2D,\ Dictator)
+numComments=9
