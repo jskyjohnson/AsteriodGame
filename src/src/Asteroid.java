@@ -7,18 +7,15 @@ import java.awt.Polygon;
 import java.util.Random;
 
 public class Asteroid extends Actor {
-	
+
 	private int frame;
-	
+
 	public Polygon polygon;
-	
-	private Random rand = new Random();
 
 	public Asteroid(Dictator d) {
-		super(new Position(d.rand.nextInt(d.SIZE_X), d.rand.nextInt(d.SIZE_Y)), new Movement(d.rand.nextDouble()*2-1,d.rand.nextDouble()*2-1), 10);
-		System.out.println(this.getPosition().toString());
-		
-		
+		super(new Position(d.rand.nextInt(d.SIZE_X), d.rand.nextInt(d.SIZE_Y)),
+				new Movement(d.rand.nextDouble() * 2 - 1,
+						d.rand.nextDouble() * 2 - 1), 10);
 		this.polygon = makeAsteroid(radius);
 		rotation = 0;
 		this.frame = 0;
@@ -28,23 +25,22 @@ public class Asteroid extends Actor {
 		// TODO Auto-generated method stub
 		int[] xs = new int[5];
 		int[] ys = new int[5];
-		
-		double angle = (2*Math.PI/5);
-		
-		for(int i = 0; i < 5; i++){
-			xs[i] = (int)(radius*Math.sin(i*angle));
-			ys[i] = (int)(radius*Math.cos(i*angle));
+
+		double angle = (2 * Math.PI / 5);
+
+		for (int i = 0; i < 5; i++) {
+			xs[i] = (int) (radius * Math.sin(i * angle));
+			ys[i] = (int) (radius * Math.cos(i * angle));
 		}
-		
-		
-		return new Polygon(xs,ys,5);
+
+		return new Polygon(xs, ys, 5);
 	}
 
 	public void update(Dictator d) {
 		super.update(d);
 		this.frame++;
 		this.getPosition().add(this.getVelocity());
-		
+
 	}
 
 	public String toString() {
@@ -60,11 +56,24 @@ public class Asteroid extends Actor {
 	public int getFrame() {
 		return frame;
 	}
-	
-	public void draw(Graphics2D g, Dictator d){
+
+	public void draw(Graphics2D g, Dictator d) {
 		g.setColor(Color.RED);
-		g.drawPolygon(polygon);;
-		
+		g.drawPolygon(polygon);
+		;
+
 	}
-	
+
+	public void collided(Actor a, Dictator dic) {
+		if (a.getClass() != Player.class) {
+			if (a.getClass() != Asteroid.class) {
+				remove();
+				dic.score += 100;
+			}
+			
+		}else if(a.getClass()== Player.class){
+			
+		}
+	}
+
 }

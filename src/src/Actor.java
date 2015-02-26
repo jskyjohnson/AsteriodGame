@@ -15,6 +15,8 @@ public abstract class Actor {
 	/**
 	 * The rotation off of north of the object
 	 */
+	private Color color;
+	
 	public double radius;
 	
 	protected double speed;
@@ -26,7 +28,13 @@ public abstract class Actor {
 	 */
 	private boolean needsRemoval;
 	
+	public boolean getRemoval(){
+		return needsRemoval;
+	}
+	
 	public Actor(Position position, Movement velocity, double radius){
+		
+		color = Color.WHITE;
 		this.velocity = velocity;
 		this.position = position;
 		this.radius = radius;
@@ -74,9 +82,12 @@ public abstract class Actor {
 		return needsRemoval;
 	}
 	
-	public boolean remove(){
+	public void remove(){
 		this.needsRemoval = true;
-		return true;
+	}
+	
+	public double getRadius(){
+		return radius;
 	}
 	
 	public void update(Dictator d){
@@ -92,6 +103,21 @@ public abstract class Actor {
 		double posy = position.getY();
 		position.setY( posy %= d.SIZE_Y);
 	}
+	
+	public Color getColor(){
+		return color;
+	}
+	public void setColor(Color c){
+		color = c;
+	}
+	
+	public boolean colliding(Actor a){
+		
+		double radius = a.getRadius() + getRadius();
+		return (position.getDistanceToSquared(a.position) < radius * radius);
+	}
+	
+	public abstract void collided(Actor a, Dictator dic);
 	
 	public abstract void draw(Graphics2D g, Dictator d);
 }

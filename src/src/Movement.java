@@ -100,4 +100,10 @@ public class Movement {
 		this.x = tempv.getX();
 		this.y = tempv.getY();
 	}
+
+	public Movement getNormal() {
+		// TODO Auto-generated method stub
+		Movement normal = new Movement(this.x/getSpeed(), this.y/getSpeed());
+		return normal;
+	}
 }

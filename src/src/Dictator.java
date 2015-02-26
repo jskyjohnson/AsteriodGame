@@ -42,6 +42,8 @@ public class Dictator extends JFrame{
 	 * Frames per second limit
 	 */
 	private static final int FRAMES = 60;
+
+	public double bulletSpeed;
 	
 	private int NUMBER_STARS = 100;
 
@@ -75,20 +77,20 @@ public class Dictator extends JFrame{
 	/*
 	 * Current Score
 	 */
-	private int score;
+	public int score;
 	/*
 	 * High Score
 	 */
-	private int highScore;
+	public int highScore;
 	// Game Objects and others
 	/*
 	 * ArrayList of Actor Objects in the game
 	 */
-	public List<Actor> actor;
+	private List<Actor> actor;
 	/*
 	 * ArrayList of Actor Objects that need to be added to the game
 	 */
-	public List<Actor> toAdActor;
+	private List<Actor> toAddActor;
 	
 	public String thissong;
 	
@@ -139,7 +141,8 @@ public class Dictator extends JFrame{
 		super();
 		
 		framesSoFar = 0;
-		
+		score = 0;
+		bulletSpeed = 5;
 		//SONG Analyzer Now!!
 		thissong = "test.mp3";
 		
@@ -161,6 +164,12 @@ public class Dictator extends JFrame{
 		        mouse.update(e.getPoint());
 		    }
 		    
+		});
+		
+		addMouseListener(new MouseAdapter(){
+			public void mousePressed(MouseEvent e){
+				shoot();
+			}
 		});
 		
 		// Add Key Listener, only modifies player
@@ -206,8 +215,9 @@ public class Dictator extends JFrame{
 						}
 					}
 				}
-			
 			}
+
+			
 
 			// key mapping for release
 			public void keyReleased(KeyEvent e) {
@@ -273,15 +283,11 @@ public class Dictator extends JFrame{
 	 * Starts the game, including game loop and update system.
 	 */
 	private void startGame() {
-		this.actor = new ArrayList();
-		this.toAdActor = new ArrayList();
+		this.setActor(new ArrayList<Actor>());
+		this.toAddActor = new ArrayList<Actor>();
 		this.StarCaptain = new Player(this);
 		this.starlist = new ArrayList<Star>();
 		this.asteroids = new ArrayList<Actor>();
-		
-		
-		
-
 		restartGame();
 
 		// Set star timer to refresh at every frame value
@@ -300,12 +306,20 @@ public class Dictator extends JFrame{
 			Star startemp = new Star(a,b,c,group);
 			starlist.add( startemp);
 		}
+		
+		toAddActor.add(StarCaptain);
+		
+		
+		//Asteroid Generation (MUST CHANGE)
 		for(int i = 0; i < 10; i++){
 			Asteroid asteroid = new Asteroid(this);
 			asteroids.add(asteroid);
 		}
 		
-		// Game Loop
+		toAddActor.addAll(asteroids);
+		
+		
+		// gamme Loop
 		while (isGame) {
 			long start = System.nanoTime();
 
@@ -313,19 +327,23 @@ public class Dictator extends JFrame{
 			StarTimer.update();
 			for (int i = 0; i < 5 && StarTimer.hasPassedTicks(); i++) {
 				updateGame();
-				
+				if(StarTimer.getSinceStart()%60 == 0){
+					score+=10;
+				}
+				StarTimer.addSinceStart();
 			}
-			// Render
+			
 			Constellation.repaint();
-
+			// Renders SpaceMap Class
+			
 			/*
-			 * Frame Checker
+			 * Waits for tick to finish
 			 */
 			long frameerror = FRAMES - (System.nanoTime() - start);
 			if (frameerror > 0) {
 				try {
-					Thread.sleep(frameerror / 1000000L,
-							(int) frameerror % 1000000);
+					Thread.sleep(frameerror / 10000L,
+							(int) frameerror % 10000);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -343,9 +361,8 @@ public class Dictator extends JFrame{
 	}
 
 	private void resetActorLists(){
-		toAdActor.clear();
-		actor.clear();
-		actor.addAll(asteroids);
+		getActor().addAll(toAddActor);
+		toAddActor.clear();
 	}
 	
 	/*
@@ -354,17 +371,48 @@ public class Dictator extends JFrame{
 	private void updateGame() {
 		
 		resetActorLists();
-		
 		framesSoFar++;
 		//ADD FRAMES SO FAR CHECKER HERE, SO THAT IF PAST SONG LIMIT GAME STOPS
 		
-		for(Actor i : asteroids){
-			i.update(this);
-		}
+		//Update Methods for Stars (Twinckles
 		for(Star i : starlist){
 			i.update(this);
 		}
-		StarCaptain.update(this);
+		
+		//Updates All actors Players,Astroids, Bullets, 
+		
+		
+		for(Actor i : actor){
+			i.update(this);
+		}
+		
+		
+		//Scans threw all Actor Objects and checks for collisions, then does the handle collision method if true
+		for(int i = 0; i<getActor().size(); i++){
+			Actor temp1 = getActor().get(i);
+			for(int i2 = i+1; i2 < getActor().size(); i2++){
+				Actor temp2 = getActor().get(i2);
+				if( i != i2 && temp1.colliding(temp2)){
+					temp1.collided(temp2, this);
+					temp2.collided(temp1, this);
+				
+				}
+			}
+		}
+		
+		Iterator<Actor> iter = actor.iterator();
+		while(iter.hasNext()){
+			Actor lookingat = iter.next();
+			if(lookingat.getRemoval()){
+				iter.remove();
+			}
+		}
+	}
+	
+	private void shoot() {
+		Bullet bullet = new Bullet(this);
+		toAddActor.add(bullet);
+				
 	}
 
 	/*
@@ -377,11 +425,31 @@ public class Dictator extends JFrame{
 	/*
 	 * main methods, starts the entire program
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args){
 
-		Dictator hitlerAndy = new Dictator();
-		hitlerAndy.startGame();
+		Dictator StalinMussoliniHitlerAndyMao = new Dictator();
+		StalinMussoliniHitlerAndyMao.startGame();
 
+	}
+	
+	public String getScore(){
+		return Integer.toString(score);
+	}
+
+
+	public List<Actor> getActor() {
+		return actor;
+	}
+
+
+	public void setActor(List<Actor> actor) {
+		this.actor = actor;
+	}
+
+
+	public void crash() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

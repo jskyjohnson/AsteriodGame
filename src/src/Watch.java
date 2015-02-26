@@ -21,11 +21,13 @@ public class Watch  {
 	
 	private float excessTicks;
 	
-	
+	private int gameStart;
 	
 	private boolean isPaused;
 
 	public Watch(float ticks){
+		
+		gameStart=0;
 		setTicks(ticks);
 		reset();
 		
@@ -43,7 +45,6 @@ public class Watch  {
 			this.excessTicks = change%ticks;
 		}
 		this.previous = curr;
-
 	}
 
 	public void reset(){
@@ -79,4 +80,13 @@ public class Watch  {
 	private static final long getCurrentTime(){
 		return (System.nanoTime()/ 1000000L);
 	}
+	
+	public int getSinceStart(){
+		return gameStart;
+	}
+	
+	public void addSinceStart(){
+		gameStart++;
+	}
+	
 }

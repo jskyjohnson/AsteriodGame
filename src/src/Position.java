@@ -10,6 +10,11 @@ public class Position {
 		this.y = y;
 	}
 	
+	public Position(Position position) {
+		this.x = position.getX();
+		this.y = position.getY();
+	}
+
 	public void add(Movement a){
 		this.x += a.getX();
 		this.y += a.getY();
@@ -52,4 +57,13 @@ public class Position {
 		
 		return x+" "+y;
 	}
+	public double getDistanceToSquared(Position a){
+		
+		double dx = this.x - a.x;
+		double dy = this.y - a.y;
+		return (dx * dx + dy * dy);
+		
+	}
+
+	
 }

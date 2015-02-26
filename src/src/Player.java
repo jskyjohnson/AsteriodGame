@@ -27,6 +27,7 @@ public class Player extends Actor {
 		speed = 0;
 		rotation = 0;
 		this.frame = 0;
+		radius = 10;
 
 		thrustingUp = false;
 		thrustingDown = false;
@@ -146,11 +147,17 @@ public class Player extends Actor {
 		// TODO add check for pause, or thrust, or what ever, i don't really
 		// know
 		
-		g.setColor(Color.WHITE);
+		g.setColor(getColor());
 		if (true) {
 			g.drawLine(-10, -8, 10, 0);
 			g.drawLine(-10, 8, 10, 0);
 			g.drawLine(-6, -6, -6, 6);
+		}
+	}
+
+	public void collided(Actor a, Dictator dic) {
+		if(a.getClass() == Asteroid.class){
+			dic.crash();
 		}
 	}
 
