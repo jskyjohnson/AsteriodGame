@@ -138,7 +138,7 @@ public class Player extends Actor {
 			this.getVelocity().addX(ACCELERATION);
 		}
 
-		this.getVelocity().scale(0.993);
+		this.getVelocity().scale(.990);
 
 	}
 
@@ -159,6 +159,12 @@ public class Player extends Actor {
 		if(a.getClass() == Asteroid.class){
 			dic.crash();
 		}
+	}
+
+	public void center(Dictator d) {
+		this.getVelocity().set(0.0,0.0);
+		this.getPosition().set(d.SIZE_X/2, d.SIZE_Y/2);
+		
 	}
 
 }

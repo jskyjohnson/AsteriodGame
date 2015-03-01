@@ -7,10 +7,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Random;
-
 import javax.swing.JPanel;
 
 /**
@@ -22,8 +18,8 @@ import javax.swing.JPanel;
  * 
  * @author Sky Johnson
  */
-public class SpaceMap extends JPanel 
-	
+public class SpaceMap extends JPanel
+
 {
 
 	/*
@@ -38,7 +34,8 @@ public class SpaceMap extends JPanel
 	/*
 	 * Text font
 	 */
-	private static final Font SUBTITLE_FONT = new Font("Dialog", Font.PLAIN, 15);
+	private static final Font SUBTITLE_FONT = new Font("Dialog",
+			Font.ROMAN_BASELINE, 15);
 
 	/*
 	 * Random
@@ -74,30 +71,66 @@ public class SpaceMap extends JPanel
 		graphics.setColor(Color.WHITE);
 
 		AffineTransform identity = graphics.getTransform();
-		graphics.drawString(dictator.getScore(), 40, dictator.SIZE_Y - 40);
-		// draws stars
 
-		for (Star i : dictator.starlist) {
+		if (!dictator.checkForRestart()) {
+			// DrawScores
+			graphics.setFont(SUBTITLE_FONT);
+			graphics.drawString("SCORE: "+dictator.getScore(), 40, dictator.SIZE_Y - 40);
+
+			// draw Lives
+			graphics.translate(dictator.SIZE_X - 100, dictator.SIZE_Y - 40);
+			for (int i = 0; i < dictator.lives; i++) {
+				graphics.drawLine(-8, 10, 0, -10);
+				graphics.drawLine(8, 10, 0, -10);
+				graphics.drawLine(-6, 6, 6, 6);
+				graphics.translate(30, 0);
+			}
+			
+			//draw Bullets
 			graphics.setTransform(identity);
-			i.drawStar(graphics);
+			graphics.translate(dictator.SIZE_X-110, dictator.SIZE_Y -80 );
+			for (int i = 0; i < dictator.BULLET_MAX -dictator.bulletCount; i++) {
+				graphics.setColor(Color.WHITE);
+				graphics.drawOval(0, 0, 2, 4);
+				graphics.translate(10, 0);
+			}
+			// draw Stars Update
+			for (Star i : dictator.starlist) {
+				graphics.setTransform(identity);
+				i.drawStar(graphics);
+			}
+
+			// Draw Actors Update
+			for (int i = 0; i < dictator.getActor().size(); i++) {
+				drawActor(graphics, dictator.getActor().get(i), dictator
+						.getActor().get(i).getPosition());
+				graphics.setTransform(identity);
+			}
+
+			// Situational and Menus
+
+			// Paused
+			if (dictator.paused) {
+				drawTextCenter("PAUSED", TITLE_FONT, graphics, 0);
+				drawTextCenter("Press Esc to Exit", SUBTITLE_FONT, graphics,
+						-50);
+				drawTextCenter("Press P to Unpause", SUBTITLE_FONT, graphics,
+						-70);
+
+			}
+			// End Game
+			if (dictator.gameOver) {
+				drawTextCenter("GAME OVER", TITLE_FONT, graphics, 0);
+				drawTextCenter("Press Esc to Exit", SUBTITLE_FONT, graphics,
+						-50);
+				drawTextCenter("Press R to Restart", SUBTITLE_FONT, graphics,
+						-70);
+			}
 		}
-		
-		
-		
-		for(int i = 0; i < dictator.getActor().size(); i++){
-			drawActor(graphics, dictator.getActor().get(i), dictator.getActor().get(i).getPosition());
-			graphics.setTransform(identity);
-		}
-		//Interates threw all Actor Objects
-//		Iterator<Actor> iter = dictator.getActor().iterator();
-//		while(iter.hasNext()){
-//			Actor current = iter.next();
-//			drawActor(graphics, current, current.getPosition());
-//			graphics.setTransform(identity);
-//		}
+
 	}
-		
-	//Rotates and translates the 2dGraphics to oppropriate position object
+
+	// Rotates and translates the 2dGraphics to oppropriate position object
 	private void drawActor(Graphics2D graphics, Actor actor, Position lookingat) {
 		// DRAWING STUFF NOT DONE
 		graphics.translate(lookingat.getX(), lookingat.getY());
@@ -108,4 +141,12 @@ public class SpaceMap extends JPanel
 		actor.draw(graphics, dictator);
 	}
 
+	private void drawTextCenter(String string, Font font, Graphics2D g,
+			int downspace) {
+		g.setColor(Color.WHITE);
+		g.setFont(font);
+		g.drawString(string, dictator.SIZE_X / 2
+				- g.getFontMetrics().stringWidth(string) / 2, dictator.SIZE_Y
+				/ 2 - g.getFontMetrics().stringWidth(string) / 2 + downspace);
+	}
 }

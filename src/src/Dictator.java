@@ -1,6 +1,5 @@
 package src;
 
-
 import java.time.Clock;
 import java.util.*;
 import java.awt.*;
@@ -8,7 +7,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.util.List;
 
 import javax.swing.*;
@@ -19,13 +17,13 @@ import javax.swing.*;
  * @author Sky Johnson
  * 
  */
-public class Dictator extends JFrame{
+public class Dictator extends JFrame {
 	// serialID
 
 	/*
 	 * Serial Version
 	 */
-	 private static final long serialVersionUID = -3535839203565039672L;
+	private static final long serialVersionUID = -3535839203565039672L;
 
 	// Threads
 	/*
@@ -43,19 +41,19 @@ public class Dictator extends JFrame{
 	 */
 	private static final int FRAMES = 60;
 
+	private static final int GUN_CAP = 5;
+
+	public final int BULLET_MAX = 10;
+
 	public double bulletSpeed;
-	
+
 	private int NUMBER_STARS = 100;
 
 	// Game States
 	/*
-	 * Made boolean, if finished loading
-	 */
-	private boolean made = false;
-	/*
 	 * If paused boolean
 	 */
-	private boolean paused;
+	public boolean paused;
 	/*
 	 * if game is exiting
 	 */
@@ -64,10 +62,11 @@ public class Dictator extends JFrame{
 	 * If restart process boolean
 	 */
 	private boolean restart;
+
 	/*
 	 * If game is over boolean
 	 */
-	private boolean gameOver;
+	public boolean gameOver;
 	/*
 	 * If game is in session
 	 */
@@ -77,7 +76,11 @@ public class Dictator extends JFrame{
 	/*
 	 * Current Score
 	 */
+
+	public int lives = 3;
 	public int score;
+
+	public int bulletCount;
 	/*
 	 * High Score
 	 */
@@ -91,22 +94,21 @@ public class Dictator extends JFrame{
 	 * ArrayList of Actor Objects that need to be added to the game
 	 */
 	private List<Actor> toAddActor;
-	
+
 	public String thissong;
-	
+
 	protected SongListener songlistener;
-	
+
 	protected ArrayList<String> song;
-	
+
 	protected ArrayList<Star> starlist;
-	
+
 	public ArrayList<Actor> asteroids;
 	/*
 	 * Clock
 	 */
 	private Watch StarTimer;
 
-	
 	/*
 	 * Size of jframe x
 	 */
@@ -115,8 +117,12 @@ public class Dictator extends JFrame{
 	 * Size of jframe y
 	 */
 	public final int SIZE_Y = 600;
-	
+
 	public Mouse mouse;
+
+	public boolean mouseDown;
+
+	public Point mousePoint;
 
 	/*
 	 * Player(s?)
@@ -128,28 +134,30 @@ public class Dictator extends JFrame{
 	 */
 
 	private SpaceMap Constellation;
-	
+
 	public Random rand = new Random();
 
-	
 	public int framesSoFar;
+
 	/**
 	 * Constructor for objects of class Dictator
 	 */
 	public Dictator() {
 		// initialize instance variables
+
 		super();
-		
+
+		bulletCount = 0;
 		framesSoFar = 0;
 		score = 0;
 		bulletSpeed = 5;
-		//SONG Analyzer Now!!
+		// SONG Analyzer Now!!
 		thissong = "test.mp3";
-		
+
 		songlistener = new SongListener(thissong);
-		
+
 		song = songlistener.generate();
-		
+
 		mouse = new Mouse();
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -158,85 +166,106 @@ public class Dictator extends JFrame{
 		// create SpaceMap and set Window and jazz
 		add(this.Constellation = new SpaceMap(this), BorderLayout.CENTER);
 		setContentPane(Constellation);
-		
+
 		addMouseMotionListener(new MouseAdapter() {
-		    public void mouseMoved(MouseEvent e) {
-		        mouse.update(e.getPoint());
-		    }
-		    
+			public void mouseMoved(MouseEvent e) {
+				mouse.update(e.getPoint());
+			}
+
+			public void mouseDragged(MouseEvent e) {
+				mouse.update(e.getPoint());
+				mousePoint = e.getPoint();
+				mouseDown = true;
+			}
+
 		});
-		
-		addMouseListener(new MouseAdapter(){
-			public void mousePressed(MouseEvent e){
-				shoot();
+
+		addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				mouse.update(e.getPoint());
+				mousePoint = e.getPoint();
+				mouseDown = true;
+			}
+
+			public void mouseReleased(MouseEvent e) {
+				mouseDown = false;
+				mouse.update(e.getPoint());
 			}
 		});
-		
+
 		// Add Key Listener, only modifies player
-		
+
 		addKeyListener(new KeyAdapter() {
 
 			// key mapping for press
 			public void keyPressed(KeyEvent e) {
-				
-				if(e.getKeyChar()=='a'){
+
+				// Controlling Keys
+				if (e.getKeyCode() == KeyEvent.VK_A) {
 					if (!checkForRestart()) {
 						StarCaptain.thrustingLeft(true);
-					}else{
+					} else {
 						StarCaptain.thrustingLeft(false);
 					}
 				}
-				if(e.getKeyChar()=='d'){
-					if (!checkForRestart() ) {
+				if (e.getKeyCode() == KeyEvent.VK_D) {
+					if (!checkForRestart()) {
 						StarCaptain.thrustingRight(true);
-					}else{
+					} else {
 						StarCaptain.thrustingRight(false);
 					}
 				}
-				if(e.getKeyChar()=='s'){
-					if (!checkForRestart() ) {
+				if (e.getKeyCode() == KeyEvent.VK_S) {
+					if (!checkForRestart()) {
 						StarCaptain.thrustingDown(true);
-					}else{
+					} else {
 						StarCaptain.thrustingDown(false);
 					}
 				}
-				if(e.getKeyChar()=='w'){
-					if (!checkForRestart() ) {
+				if (e.getKeyCode() == KeyEvent.VK_W) {
+					if (!checkForRestart()) {
 						StarCaptain.thrustingUp(true);
-						
-					}else{
+
+					} else {
 						StarCaptain.thrustingUp(false);
 					}
 				}
-				if(e.getKeyChar()=='p'){
+
+				// Menu Keys
+				if (e.getKeyCode() == KeyEvent.VK_P) {
 					if (!checkForRestart()) {
-						if (!paused) {
-							pause();
-						}
+						pause();
 					}
 				}
-			}
+				if (e.getKeyCode() == KeyEvent.VK_R) {
+					if (!checkForRestart()) {
+						restart();
+					}
+				}
+				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					if (!checkForRestart()) {
+						exit = true;
+					}
+				}
 
-			
+			}
 
 			// key mapping for release
 			public void keyReleased(KeyEvent e) {
-				
-				if(e.getKeyChar()=='a'){
+
+				if (e.getKeyChar() == 'a') {
 					StarCaptain.thrustingLeft(false);
 				}
-				if(e.getKeyChar()=='w'){
+				if (e.getKeyChar() == 'w') {
 					StarCaptain.thrustingUp(false);
 				}
-				if(e.getKeyChar()=='s'){
+				if (e.getKeyChar() == 's') {
 					StarCaptain.thrustingDown(false);
 				}
-				if(e.getKeyChar()=='d'){
+				if (e.getKeyChar() == 'd') {
 					StarCaptain.thrustingRight(false);
 				}
-				
-				
-				
+
 			}
 
 		});
@@ -248,41 +277,27 @@ public class Dictator extends JFrame{
 
 	}
 
-	
 	/*
 	 * Check to see if restart has been pressed or not
 	 * 
 	 * @return If the key to restart has been pressed or not
 	 */
-	private boolean checkForRestart() {
-		boolean restartgame = gameOver;
-		if (restartgame) {
-			restart = true;
-		}
-		return restartgame;
+	public boolean checkForRestart() {
+		return restart;
 	}
 
-	/*
-	 * Check to see if the exit button has been pressed or not
-	 * 
-	 * @return if the key to end the game has been pressed or not
-	 */
-	private boolean checkForExit() {
-		boolean exitgame = exit;
-		if (exitgame) {
-			exit = true;
-		}
-		return exitgame;
-	}
+	// Restarts the game(Literrally runs threw startup again)
+	private void restart() {
 
-	private void pause() {
-		this.paused = true;
-	}
+		// score reseter
+		score = 0;
 
-	/*
-	 * Starts the game, including game loop and update system.
-	 */
-	private void startGame() {
+		lives = 3;
+		restart = true;
+
+		mousePoint = new Point();
+		mouseDown = false;
+
 		this.setActor(new ArrayList<Actor>());
 		this.toAddActor = new ArrayList<Actor>();
 		this.StarCaptain = new Player(this);
@@ -295,161 +310,265 @@ public class Dictator extends JFrame{
 		// this.Constellation = new SpaceMap(this);
 		isGame = true;
 		gameOver = false;
+		restart = false;
 		
-		//Starlist Generation
-		for(int i = 0; i < NUMBER_STARS; i++){		
-			double a = (rand.nextDouble()*SIZE_X);
-			double b = (rand.nextDouble()*SIZE_Y);
+		// Starlist Generation
+		for (int i = 0; i < NUMBER_STARS; i++) {
+			double a = (rand.nextDouble() * SIZE_X);
+			double b = (rand.nextDouble() * SIZE_Y);
 			double c = rand.nextDouble();
 			int group = rand.nextInt(16);
-			
-			Star startemp = new Star(a,b,c,group);
-			starlist.add( startemp);
+
+			Star startemp = new Star(a, b, c, group);
+			starlist.add(startemp);
 		}
-		
+
 		toAddActor.add(StarCaptain);
-		
-		
-		//Asteroid Generation (MUST CHANGE)
-		for(int i = 0; i < 10; i++){
+
+		// Asteroid Generation (MUST CHANGE)
+		for (int i = 0; i < 10; i++) {
 			Asteroid asteroid = new Asteroid(this);
 			asteroids.add(asteroid);
 		}
-		
+
 		toAddActor.addAll(asteroids);
-		
-		
-		// gamme Loop
-		while (isGame) {
+
+		restart = false;
+
+	}
+
+	private void pause() {
+		if (paused == false) {
+			this.paused = true;
+			isGame = false;
+		} else if (paused == true) {
+			this.paused = false;
+			isGame = true;
+		}
+	}
+
+	/*
+	 * Starts the game, including game loop and update system.
+	 */
+	private void startGame() {
+
+		score = 0;
+
+		lives = 3;
+		mousePoint = new Point();
+		mouseDown = false;
+
+		this.setActor(new ArrayList<Actor>());
+		this.toAddActor = new ArrayList<Actor>();
+		this.StarCaptain = new Player(this);
+		this.starlist = new ArrayList<Star>();
+		this.asteroids = new ArrayList<Actor>();
+		restartGame();
+
+		// Set star timer to refresh at every frame value
+		this.StarTimer = new Watch(FRAMES);
+		// this.Constellation = new SpaceMap(this);
+		isGame = true;
+		gameOver = false;
+		restart = false;
+
+		// Starlist Generation
+		for (int i = 0; i < NUMBER_STARS; i++) {
+			double a = (rand.nextDouble() * SIZE_X);
+			double b = (rand.nextDouble() * SIZE_Y);
+			double c = rand.nextDouble();
+			int group = rand.nextInt(16);
+
+			Star startemp = new Star(a, b, c, group);
+			starlist.add(startemp);
+		}
+
+		toAddActor.add(StarCaptain);
+
+		// Asteroid Generation (MUST CHANGE)
+		for (int i = 0; i < 10; i++) {
+			Asteroid asteroid = new Asteroid(this);
+			asteroids.add(asteroid);
+		}
+
+		toAddActor.addAll(asteroids);
+
+		// game Loop
+		while (true) {
 			long start = System.nanoTime();
 
 			// Tick
 			StarTimer.update();
 			for (int i = 0; i < 5 && StarTimer.hasPassedTicks(); i++) {
 				updateGame();
-				if(StarTimer.getSinceStart()%60 == 0){
-					score+=10;
-				}
-				StarTimer.addSinceStart();
 			}
-			
+
 			Constellation.repaint();
 			// Renders SpaceMap Class
-			
+
 			/*
 			 * Waits for tick to finish
 			 */
 			long frameerror = FRAMES - (System.nanoTime() - start);
 			if (frameerror > 0) {
 				try {
-					Thread.sleep(frameerror / 10000L,
-							(int) frameerror % 10000);
+					Thread.sleep(frameerror / 10000L, (int) frameerror % 10000);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 
-		}
+			// Game Over Sequence / menus and stuff
 
+		}
 	}
 
 	/*
 	 * when dies, stops everything and then waits for restart
 	 */
 	private void endGame() {
+		isGame = false;
+	}
+
+	private void resetLists() {
 
 	}
 
-	private void resetActorLists(){
-		getActor().addAll(toAddActor);
-		toAddActor.clear();
-	}
-	
 	/*
 	 * the update loop for the game
 	 */
 	private void updateGame() {
-		
-		resetActorLists();
-		framesSoFar++;
-		//ADD FRAMES SO FAR CHECKER HERE, SO THAT IF PAST SONG LIMIT GAME STOPS
-		
-		//Update Methods for Stars (Twinckles
-		for(Star i : starlist){
-			i.update(this);
+		// Pre-Game / Post game Options manager?
+
+		if (exit) {
+			System.exit(0);
 		}
-		
-		//Updates All actors Players,Astroids, Bullets, 
-		
-		
-		for(Actor i : actor){
-			i.update(this);
+
+		if (songlistener.endSong()) {
 		}
-		
-		
-		//Scans threw all Actor Objects and checks for collisions, then does the handle collision method if true
-		for(int i = 0; i<getActor().size(); i++){
-			Actor temp1 = getActor().get(i);
-			for(int i2 = i+1; i2 < getActor().size(); i2++){
-				Actor temp2 = getActor().get(i2);
-				if( i != i2 && temp1.colliding(temp2)){
-					temp1.collided(temp2, this);
-					temp2.collided(temp1, this);
-				
+
+		// For In Game
+
+		if (isGame && !paused && !restart) {
+
+			checkMouseDown();
+			// Time based stuff
+			
+			//Score Counter every second
+			if (StarTimer.getSinceStart() % 60 == 0) {
+				score += 10;
+			}
+			
+			//Bullet Regeneration
+			if (StarTimer.getSinceStart() % 30 == 0) {
+				if (BULLET_MAX - bulletCount < BULLET_MAX) {
+					bulletCount--;
+				}
+
+			}
+			StarTimer.addSinceStart();
+
+			getActor().addAll(toAddActor);
+			toAddActor.clear();
+
+			framesSoFar++;
+			// ADD FRAMES SO FAR CHECKER HERE, SO THAT IF PAST SONG LIMIT GAME
+			// STOPS
+
+			// Update Methods for Stars (Twinckles
+			for (Star i : starlist) {
+				i.update(this);
+			}
+
+			// Updates All actors Players,Astroids, Bullets,
+
+			for (Actor i : actor) {
+				i.update(this);
+			}
+
+			// Scans threw all Actor Objects and checks for collisions, then
+			// does
+			// the handle collision method if true
+			for (int i = 0; i < getActor().size(); i++) {
+				Actor temp1 = getActor().get(i);
+				for (int i2 = i + 1; i2 < getActor().size(); i2++) {
+					Actor temp2 = getActor().get(i2);
+					if (i != i2 && temp1.colliding(temp2)) {
+						temp1.collided(temp2, this);
+						temp2.collided(temp1, this);
+
+					}
+				}
+			}
+
+			Iterator<Actor> iter = actor.iterator();
+			while (iter.hasNext()) {
+				Actor lookingat = iter.next();
+				if (lookingat.getRemoval()) {
+					iter.remove();
 				}
 			}
 		}
-		
-		Iterator<Actor> iter = actor.iterator();
-		while(iter.hasNext()){
-			Actor lookingat = iter.next();
-			if(lookingat.getRemoval()){
-				iter.remove();
-			}
+	}
+
+	private void checkMouseDown() {
+		// TODO Auto-generated method stub
+		if (mouseDown) {
+			if (framesSoFar % GUN_CAP == 0)
+				shoot();
+
 		}
 	}
-	
+
 	private void shoot() {
-		Bullet bullet = new Bullet(this);
-		toAddActor.add(bullet);
-				
+		if (bulletCount < BULLET_MAX) {
+			if (!gameOver) {
+				Bullet bullet = new Bullet(this);
+				bulletCount++;
+				toAddActor.add(bullet);
+			}
+		}
 	}
 
 	/*
 	 * restart loop for the game,
 	 */
 	private void restartGame() {
-		resetActorLists();
+		resetLists();
 	}
 
 	/*
 	 * main methods, starts the entire program
 	 */
-	public static void main(String[] args){
+	public static void main(String[] args) {
 
 		Dictator StalinMussoliniHitlerAndyMao = new Dictator();
 		StalinMussoliniHitlerAndyMao.startGame();
 
 	}
-	
-	public String getScore(){
+
+	public String getScore() {
 		return Integer.toString(score);
 	}
-
 
 	public List<Actor> getActor() {
 		return actor;
 	}
 
-
 	public void setActor(List<Actor> actor) {
 		this.actor = actor;
 	}
 
-
 	public void crash() {
 		// TODO Auto-generated method stub
-		
+		if (lives == 0) {
+			endGame();
+			gameOver = true;
+		} else {
+			lives--;
+			StarCaptain.center(this);
+
+		}
 	}
 
 }

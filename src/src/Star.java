@@ -7,15 +7,8 @@ import java.awt.Graphics2D;
 public class Star {
 	private double x;
 	private double y;
-	private double initx;
-	private double inity;
-	private double brightness;
 	private Color color;
-	private int colorDir = 1;
 	private double size;
-	private double frame;
-	private int group;
-	
 	private boolean sizedir;
 	private boolean rup;
 	private boolean gup;
@@ -23,13 +16,9 @@ public class Star {
 	public Star(double mx, double my, double mbrightness, int group){
 		x = mx;
 		y = my;
-		initx = mx;
-		inity = my;
-		brightness = mbrightness;
 		size = group*20/16;
 		color = new Color(group*255/16, group*255/16, group*255/16);
-		this.group = group;
-		sizedir = false;
+		sizedir = true;
 		
 		rup = false;
 		gup = false;

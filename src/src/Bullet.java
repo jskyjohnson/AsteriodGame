@@ -8,6 +8,7 @@ public class Bullet extends Actor {
 	
 	public Bullet(Dictator d){
 		super(new Position(d.StarCaptain.getPosition()), new Movement(d.bulletSpeed*Math.cos(d.StarCaptain.rotation), d.bulletSpeed*Math.sin(d.StarCaptain.rotation)),1);
+		edgeCollision = true;
 		frame = 0;
 		setColor(Color.WHITE);
 	}
@@ -16,14 +17,17 @@ public class Bullet extends Actor {
 		super.update(d);
 		this.frame++;
 		this.getPosition().add(this.getVelocity());
-		if(frame > 100){
+		if(frame > 140){
+			d.score--;
 			remove();
 		}
 	}
 
 	public void collided(Actor a, Dictator dic) {
 		// TODO Auto-generated method stub
-		
+		if(a.getClass() == Asteroid.class){
+			remove();
+		}
 	}
 
 	public void draw(Graphics2D g, Dictator d) {

@@ -65,5 +65,11 @@ public class Position {
 		
 	}
 
+	public void set(double i, double j) {
+		// TODO Auto-generated method stub
+		x = i;
+		y = j;
+	}
+
 	
 }

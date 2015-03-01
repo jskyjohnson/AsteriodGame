@@ -50,4 +50,9 @@ public class SongListener {
 		return song;
 	}
 
+	public boolean endSong() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
