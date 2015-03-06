@@ -8,7 +8,8 @@ public class Star {
 	private double x;
 	private double y;
 	private Color color;
-	private double size;
+	private int size;
+	private int tosize;
 	private boolean sizedir;
 	private boolean rup;
 	private boolean gup;
@@ -16,7 +17,8 @@ public class Star {
 	public Star(double mx, double my, double mbrightness, int group){
 		x = mx;
 		y = my;
-		size = group*20/16;
+		size = 1;
+		tosize = 20;
 		color = new Color(group*255/16, group*255/16, group*255/16);
 		sizedir = true;
 		
@@ -27,11 +29,26 @@ public class Star {
 	void drawStar(Graphics2D gg){
 		
 		gg.setColor(color);
-		gg.drawOval((int)x,(int) y, (int) 1 ,(int) 1);
+		gg.drawOval((int)x-(size/2),(int) y-(size/2), (int) size ,(int) size);
+	}
+	
+	public void setColor(Color a){
+		this.color = a;
+	}
+	public void setToSize(int toasize){
+		tosize = toasize;
 	}
 	void update(Dictator dic){
 		x+=.1*dic.StarCaptain.getVelocity().getX();
 		y+=.1*dic.StarCaptain.getVelocity().getY();
+		
+		if(size!=tosize&& dic.getTime()%60 == 0){
+			if(size>tosize){
+				size--;
+			}else if(tosize>size){
+				size++;
+			}
+		}
 		
 		if(x < 0.0f){
 			x += dic.SIZE_X;
@@ -94,17 +111,6 @@ public class Star {
 				}else{
 					b-=1;
 				}
-		}
-		if(sizedir){
-			size++;
-			if(size>=7){
-				sizedir=false;
-			}
-		}else{
-			size--;
-			if(size<=0){
-				sizedir=true;
-			}
 		}
 		
 		Color f = new Color(r,g,b);

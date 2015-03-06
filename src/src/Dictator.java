@@ -41,11 +41,13 @@ public class Dictator extends JFrame {
 	 */
 	private static final int FRAMES = 60;
 
-	private static final int GUN_CAP = 5;
+	private static final int GUN_CAP = 1;
 
-	public final int BULLET_MAX = 10;
+	public final int BULLET_MAX = 100;
 
 	public double bulletSpeed;
+	
+	public final int BULLET_REGEN = 1;
 
 	private int NUMBER_STARS = 100;
 
@@ -97,10 +99,6 @@ public class Dictator extends JFrame {
 
 	public String thissong;
 
-	protected SongListener songlistener;
-
-	protected ArrayList<String> song;
-
 	protected ArrayList<Star> starlist;
 
 	public ArrayList<Actor> asteroids;
@@ -138,6 +136,8 @@ public class Dictator extends JFrame {
 	public Random rand = new Random();
 
 	public int framesSoFar;
+	
+	public SpawnController spawner;
 
 	/**
 	 * Constructor for objects of class Dictator
@@ -146,6 +146,7 @@ public class Dictator extends JFrame {
 		// initialize instance variables
 
 		super();
+		
 
 		bulletCount = 0;
 		framesSoFar = 0;
@@ -153,11 +154,7 @@ public class Dictator extends JFrame {
 		bulletSpeed = 5;
 		// SONG Analyzer Now!!
 		thissong = "test.mp3";
-
-		songlistener = new SongListener(thissong);
-
-		song = songlistener.generate();
-
+		
 		mouse = new Mouse();
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -270,6 +267,12 @@ public class Dictator extends JFrame {
 
 		});
 
+		
+		
+		//Create Spawn Object on init, to be changed at Start Game methods
+		spawner = new SpawnController(this, thissong);
+		
+		
 		// Resize
 		pack();
 		setLocationRelativeTo(null);
@@ -288,16 +291,16 @@ public class Dictator extends JFrame {
 
 	// Restarts the game(Literrally runs threw startup again)
 	private void restart() {
-
-		// score reseter
+		bulletCount = 0;
+		framesSoFar = 0;
+		bulletSpeed = 5;
 		score = 0;
 
 		lives = 3;
-		restart = true;
-
 		mousePoint = new Point();
 		mouseDown = false;
 
+		spawner.reset();
 		this.setActor(new ArrayList<Actor>());
 		this.toAddActor = new ArrayList<Actor>();
 		this.StarCaptain = new Player(this);
@@ -311,7 +314,7 @@ public class Dictator extends JFrame {
 		isGame = true;
 		gameOver = false;
 		restart = false;
-		
+
 		// Starlist Generation
 		for (int i = 0; i < NUMBER_STARS; i++) {
 			double a = (rand.nextDouble() * SIZE_X);
@@ -326,8 +329,8 @@ public class Dictator extends JFrame {
 		toAddActor.add(StarCaptain);
 
 		// Asteroid Generation (MUST CHANGE)
-		for (int i = 0; i < 10; i++) {
-			Asteroid asteroid = new Asteroid(this);
+		for (int i = 0; i < 0; i++) {
+			Asteroid asteroid = new Asteroid(this, 30,new Position(rand.nextInt(SIZE_X), rand.nextInt(SIZE_Y)), new Movement(rand.nextDouble() * 2 - 1, rand.nextDouble() * 2 - 1));
 			asteroids.add(asteroid);
 		}
 
@@ -386,8 +389,8 @@ public class Dictator extends JFrame {
 		toAddActor.add(StarCaptain);
 
 		// Asteroid Generation (MUST CHANGE)
-		for (int i = 0; i < 10; i++) {
-			Asteroid asteroid = new Asteroid(this);
+		for (int i = 0; i < 0; i++) {
+			Asteroid asteroid = new Asteroid(this, 30,new Position(rand.nextInt(SIZE_X), rand.nextInt(SIZE_Y)), new Movement(rand.nextDouble() * 2 - 1, rand.nextDouble() * 2 - 1));
 			asteroids.add(asteroid);
 		}
 
@@ -439,12 +442,16 @@ public class Dictator extends JFrame {
 	 */
 	private void updateGame() {
 		// Pre-Game / Post game Options manager?
-
+		
+		
+		//Updates Spawner
+		spawner.update();
+		
+		getActor().addAll(toAddActor);
+		toAddActor.clear();
+		
 		if (exit) {
 			System.exit(0);
-		}
-
-		if (songlistener.endSong()) {
 		}
 
 		// For In Game
@@ -453,14 +460,14 @@ public class Dictator extends JFrame {
 
 			checkMouseDown();
 			// Time based stuff
-			
-			//Score Counter every second
+
+			// Score Counter every second
 			if (StarTimer.getSinceStart() % 60 == 0) {
 				score += 10;
 			}
-			
-			//Bullet Regeneration
-			if (StarTimer.getSinceStart() % 30 == 0) {
+
+			// Bullet Regeneration
+			if (StarTimer.getSinceStart() % BULLET_REGEN == 0) {
 				if (BULLET_MAX - bulletCount < BULLET_MAX) {
 					bulletCount--;
 				}
@@ -468,8 +475,7 @@ public class Dictator extends JFrame {
 			}
 			StarTimer.addSinceStart();
 
-			getActor().addAll(toAddActor);
-			toAddActor.clear();
+			
 
 			framesSoFar++;
 			// ADD FRAMES SO FAR CHECKER HERE, SO THAT IF PAST SONG LIMIT GAME
@@ -484,6 +490,7 @@ public class Dictator extends JFrame {
 
 			for (Actor i : actor) {
 				i.update(this);
+				
 			}
 
 			// Scans threw all Actor Objects and checks for collisions, then
@@ -559,6 +566,14 @@ public class Dictator extends JFrame {
 		this.actor = actor;
 	}
 
+	public void addToAddActors(Actor actor) {
+		toAddActor.add(actor);
+	}
+
+	
+	public int getTime(){
+		return StarTimer.getSinceStart();
+	}
 	public void crash() {
 		// TODO Auto-generated method stub
 		if (lives == 0) {
@@ -569,6 +584,12 @@ public class Dictator extends JFrame {
 			StarCaptain.center(this);
 
 		}
+	}
+
+	public Position getPlayerPosition() {
+		// TODO Auto-generated method stub
+		Position a = StarCaptain.getPosition();
+		return a;
 	}
 
 }

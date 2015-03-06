@@ -13,33 +13,20 @@ public class SongListener {
 
 	public SongListener(String thissong) {
 		// TODO Auto-generated constructor stub
-
 		song = new ArrayList<String>();
-		try {
-			out = new PrintStream("temp.t");
-			
-			out.println("asdfasdfasdf");
-			out.println("asdfasdfasdf");
-
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 	}
 
-	public ArrayList<String> generate() {
+	public void generate() {
 		// TODO Auto-generated method stub
 		File songFile = new File("temp.t");
 		Scanner adder;
 		try {
+			
 			adder = new Scanner(songFile);
-
 			while (adder.hasNextLine()) {
-
 				String k = adder.nextLine();
 				song.add(k);
-
 			}
 			adder.close();
 		} catch (FileNotFoundException e) {
@@ -47,9 +34,11 @@ public class SongListener {
 			e.printStackTrace();
 		}
 
-		return song;
 	}
 
+	public ArrayList<String> getSong(){
+		return song;
+	}
 	public boolean endSong() {
 		// TODO Auto-generated method stub
 		return false;

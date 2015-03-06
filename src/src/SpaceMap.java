@@ -75,7 +75,8 @@ public class SpaceMap extends JPanel
 		if (!dictator.checkForRestart()) {
 			// DrawScores
 			graphics.setFont(SUBTITLE_FONT);
-			graphics.drawString("SCORE: "+dictator.getScore(), 40, dictator.SIZE_Y - 40);
+			graphics.drawString("SCORE: " + dictator.getScore(), 40,
+					dictator.SIZE_Y - 40);
 
 			// draw Lives
 			graphics.translate(dictator.SIZE_X - 100, dictator.SIZE_Y - 40);
@@ -85,11 +86,11 @@ public class SpaceMap extends JPanel
 				graphics.drawLine(-6, 6, 6, 6);
 				graphics.translate(30, 0);
 			}
-			
-			//draw Bullets
+
+			// draw Bullets
 			graphics.setTransform(identity);
-			graphics.translate(dictator.SIZE_X-110, dictator.SIZE_Y -80 );
-			for (int i = 0; i < dictator.BULLET_MAX -dictator.bulletCount; i++) {
+			graphics.translate(dictator.SIZE_X - 110, dictator.SIZE_Y - 80);
+			for (int i = 0; i < dictator.BULLET_MAX - dictator.bulletCount; i++) {
 				graphics.setColor(Color.WHITE);
 				graphics.drawOval(0, 0, 2, 4);
 				graphics.translate(10, 0);
@@ -115,6 +116,8 @@ public class SpaceMap extends JPanel
 				drawTextCenter("Press Esc to Exit", SUBTITLE_FONT, graphics,
 						-50);
 				drawTextCenter("Press P to Unpause", SUBTITLE_FONT, graphics,
+						-90);
+				drawTextCenter("Press R to Restart", SUBTITLE_FONT, graphics,
 						-70);
 
 			}
