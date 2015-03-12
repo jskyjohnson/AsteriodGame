@@ -21,7 +21,7 @@ public class Asteroid extends Actor {
 	private Random r = new Random();
 
 	public Asteroid(Dictator d, int initRad, Position a, Movement b) {
-		super(a, b, initRad);
+		super(d, a, b, initRad);
 		if (toClose(d.getPlayerPosition(), a)&&!isSplit) {
 			
 			Position a2 = a;

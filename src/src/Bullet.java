@@ -7,7 +7,7 @@ public class Bullet extends Actor {
 	private int frame;
 	
 	public Bullet(Dictator d){
-		super(new Position(d.StarCaptain.getPosition()), new Movement(d.bulletSpeed*Math.cos(d.StarCaptain.rotation), d.bulletSpeed*Math.sin(d.StarCaptain.rotation)),1);
+		super(d, new Position(d.StarCaptain.getPosition()), new Movement(d.bulletSpeed*Math.cos(d.StarCaptain.rotation), d.bulletSpeed*Math.sin(d.StarCaptain.rotation)),1);
 		edgeCollision = true;
 		frame = 0;
 		setColor(Color.WHITE);

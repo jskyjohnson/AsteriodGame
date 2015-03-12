@@ -72,7 +72,7 @@ public class SpaceMap extends JPanel
 
 		AffineTransform identity = graphics.getTransform();
 
-		if (!dictator.checkForRestart()) {
+		if (!dictator.checkForRestart() && !dictator.isGenerated()) {
 			// DrawScores
 			graphics.setFont(SUBTITLE_FONT);
 			graphics.drawString("SCORE: " + dictator.getScore(), 40,

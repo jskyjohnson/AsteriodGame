@@ -60,6 +60,8 @@ public class Dictator extends JFrame {
 	 * if game is exiting
 	 */
 	private boolean exit;
+	
+	private boolean generated;
 	/*
 	 * If restart process boolean
 	 */
@@ -97,7 +99,7 @@ public class Dictator extends JFrame {
 	 */
 	private List<Actor> toAddActor;
 
-	public String thissong;
+	public String seed;
 
 	protected ArrayList<Star> starlist;
 
@@ -152,8 +154,9 @@ public class Dictator extends JFrame {
 		framesSoFar = 0;
 		score = 0;
 		bulletSpeed = 5;
-		// SONG Analyzer Now!!
-		thissong = "test.mp3";
+		seed = "Insert String";
+		
+		setGenerated(false);
 		
 		mouse = new Mouse();
 		setLayout(new BorderLayout());
@@ -270,7 +273,7 @@ public class Dictator extends JFrame {
 		
 		
 		//Create Spawn Object on init, to be changed at Start Game methods
-		spawner = new SpawnController(this, thissong);
+		spawner = new SpawnController(this, seed);
 		
 		
 		// Resize
@@ -322,22 +325,18 @@ public class Dictator extends JFrame {
 			double c = rand.nextDouble();
 			int group = rand.nextInt(16);
 
-			Star startemp = new Star(a, b, c, group);
+			Star startemp = new Star(this, a, b, c, group);
 			starlist.add(startemp);
 		}
 
 		toAddActor.add(StarCaptain);
 
 		// Asteroid Generation (MUST CHANGE)
-		for (int i = 0; i < 0; i++) {
-			Asteroid asteroid = new Asteroid(this, 30,new Position(rand.nextInt(SIZE_X), rand.nextInt(SIZE_Y)), new Movement(rand.nextDouble() * 2 - 1, rand.nextDouble() * 2 - 1));
-			asteroids.add(asteroid);
-		}
 
 		toAddActor.addAll(asteroids);
 
 		restart = false;
-
+		setGenerated(true);
 	}
 
 	private void pause() {
@@ -354,48 +353,10 @@ public class Dictator extends JFrame {
 	 * Starts the game, including game loop and update system.
 	 */
 	private void startGame() {
+		
+		restart();
 
-		score = 0;
-
-		lives = 3;
-		mousePoint = new Point();
-		mouseDown = false;
-
-		this.setActor(new ArrayList<Actor>());
-		this.toAddActor = new ArrayList<Actor>();
-		this.StarCaptain = new Player(this);
-		this.starlist = new ArrayList<Star>();
-		this.asteroids = new ArrayList<Actor>();
-		restartGame();
-
-		// Set star timer to refresh at every frame value
-		this.StarTimer = new Watch(FRAMES);
-		// this.Constellation = new SpaceMap(this);
-		isGame = true;
-		gameOver = false;
-		restart = false;
-
-		// Starlist Generation
-		for (int i = 0; i < NUMBER_STARS; i++) {
-			double a = (rand.nextDouble() * SIZE_X);
-			double b = (rand.nextDouble() * SIZE_Y);
-			double c = rand.nextDouble();
-			int group = rand.nextInt(16);
-
-			Star startemp = new Star(a, b, c, group);
-			starlist.add(startemp);
-		}
-
-		toAddActor.add(StarCaptain);
-
-		// Asteroid Generation (MUST CHANGE)
-		for (int i = 0; i < 0; i++) {
-			Asteroid asteroid = new Asteroid(this, 30,new Position(rand.nextInt(SIZE_X), rand.nextInt(SIZE_Y)), new Movement(rand.nextDouble() * 2 - 1, rand.nextDouble() * 2 - 1));
-			asteroids.add(asteroid);
-		}
-
-		toAddActor.addAll(asteroids);
-
+		
 		// game Loop
 		while (true) {
 			long start = System.nanoTime();
@@ -445,6 +406,7 @@ public class Dictator extends JFrame {
 		
 		
 		//Updates Spawner
+		
 		spawner.update();
 		
 		getActor().addAll(toAddActor);
@@ -456,7 +418,7 @@ public class Dictator extends JFrame {
 
 		// For In Game
 
-		if (isGame && !paused && !restart) {
+		if (isGame && !paused && !restart && isGenerated()) {
 
 			checkMouseDown();
 			// Time based stuff
@@ -590,6 +552,14 @@ public class Dictator extends JFrame {
 		// TODO Auto-generated method stub
 		Position a = StarCaptain.getPosition();
 		return a;
+	}
+
+	public boolean isGenerated() {
+		return generated;
+	}
+
+	public void setGenerated(boolean generated) {
+		this.generated = generated;
 	}
 
 }

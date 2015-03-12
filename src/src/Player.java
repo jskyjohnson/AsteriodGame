@@ -22,7 +22,7 @@ public class Player extends Actor {
 	private int frame;
 
 	public Player(Dictator d) {
-		super(new Position(d.SIZE_X / 2.0, d.SIZE_Y / 2.0), new Movement(0.0,
+		super(d, new Position(d.SIZE_X / 2.0, d.SIZE_Y / 2.0), new Movement(0.0,
 				0.0), 10.0);
 		speed = 0;
 		rotation = 0;

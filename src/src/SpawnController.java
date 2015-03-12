@@ -57,10 +57,11 @@ public class SpawnController {
 
 			}
 		}
-		System.out.println(currentString);
+		
 		if (currentString.contains("a")) {
+			int offsetInt = currentString.indexOf("a")+2;
 			if (dictator.getTime() % spawnCap == 0) {
-				int numberAsteroidSpawn = Integer.parseInt(currentString.substring(2, 3));
+				int numberAsteroidSpawn = Integer.parseInt(currentString.substring(offsetInt, offsetInt+1));
 				for (int i = 0; i < numberAsteroidSpawn; i++) {
 					Asteroid new1 = new Asteroid(dictator, 30, new Position(
 							dictator.rand.nextInt(dictator.SIZE_X),
@@ -72,6 +73,16 @@ public class SpawnController {
 				}
 			}
 		}
-
+		
+		for(Star star : dictator.starlist){
+			if(star.getGroup() == 0){
+				System.out.println("asdf");
+				star.setToSize(5);
+				
+			}else{
+				star.setToSize(1);
+				System.out.println("fafafa");
+			}
+		}
 	}
 }

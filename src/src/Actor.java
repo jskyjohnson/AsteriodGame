@@ -16,6 +16,8 @@ public abstract class Actor {
 	private Color color;
 
 	public double radius;
+	
+	public int group;
 
 	protected double speed;
 
@@ -32,7 +34,9 @@ public abstract class Actor {
 		return needsRemoval;
 	}
 
-	public Actor(Position position, Movement velocity, double radius) {
+	public Actor(Dictator d, Position position, Movement velocity, double radius) {
+		
+		group = d.rand.nextInt(15)+1;
 		edgeCollision = false;
 		color = Color.WHITE;
 		this.velocity = velocity;
