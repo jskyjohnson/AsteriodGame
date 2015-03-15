@@ -71,8 +71,19 @@ public class SpaceMap extends JPanel
 		graphics.setColor(Color.WHITE);
 
 		AffineTransform identity = graphics.getTransform();
+		
+		if(!dictator.isGenerated()){
+			drawTextCenter("Welcome to Asteroids!", TITLE_FONT, graphics, 0);
+			drawTextCenter("Please type in a seed", SUBTITLE_FONT, graphics, 0);
+			
+			drawTextCenter(dictator.seed, SUBTITLE_FONT, graphics, 0);
+			
+			if(dictator.entered){
+				dictator.setGenerated(true);
+			}
+		}
 
-		if (!dictator.checkForRestart() && !dictator.isGenerated()) {
+		if (!dictator.checkForRestart() && dictator.isGenerated()) {
 			// DrawScores
 			graphics.setFont(SUBTITLE_FONT);
 			graphics.drawString("SCORE: " + dictator.getScore(), 40,

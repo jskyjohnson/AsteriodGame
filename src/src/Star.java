@@ -17,7 +17,6 @@ public class Star {
 	private boolean bup;
 	public Star(Dictator d, double mx, double my, double mbrightness, int group){
 		this.group = group;
-		System.out.println(group);
 		x = mx;
 		y = my;
 		size = 1;

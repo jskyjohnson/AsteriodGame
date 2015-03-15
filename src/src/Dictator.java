@@ -25,16 +25,6 @@ public class Dictator extends JFrame {
 	 */
 	private static final long serialVersionUID = -3535839203565039672L;
 
-	// Threads
-	/*
-	 * Initialization thread
-	 */
-	Thread initThread;
-	/*
-	 * Looping thread
-	 */
-	Thread loopThread;
-
 	// Game Constants
 	/*
 	 * Frames per second limit
@@ -123,6 +113,8 @@ public class Dictator extends JFrame {
 	public boolean mouseDown;
 
 	public Point mousePoint;
+	
+	public boolean entered;
 
 	/*
 	 * Player(s?)
@@ -155,6 +147,8 @@ public class Dictator extends JFrame {
 		score = 0;
 		bulletSpeed = 5;
 		seed = "Insert String";
+		entered = false;
+		
 		
 		setGenerated(false);
 		
@@ -247,6 +241,11 @@ public class Dictator extends JFrame {
 						exit = true;
 					}
 				}
+				if(e.getKeyCode() == KeyEvent.VK_ENTER){
+					if (!checkForRestart()){
+						entered = true;
+					}
+				}
 
 			}
 
@@ -264,6 +263,11 @@ public class Dictator extends JFrame {
 				}
 				if (e.getKeyChar() == 'd') {
 					StarCaptain.thrustingRight(false);
+				}
+				if(e.getKeyCode() == KeyEvent.VK_ENTER){
+					if (!checkForRestart()){
+						entered = false;
+					}
 				}
 
 			}
@@ -333,10 +337,9 @@ public class Dictator extends JFrame {
 
 		// Asteroid Generation (MUST CHANGE)
 
-		toAddActor.addAll(asteroids);
 
 		restart = false;
-		setGenerated(true);
+		setGenerated(false);
 	}
 
 	private void pause() {
@@ -405,9 +408,6 @@ public class Dictator extends JFrame {
 		// Pre-Game / Post game Options manager?
 		
 		
-		//Updates Spawner
-		
-		spawner.update();
 		
 		getActor().addAll(toAddActor);
 		toAddActor.clear();
@@ -415,13 +415,20 @@ public class Dictator extends JFrame {
 		if (exit) {
 			System.exit(0);
 		}
-
-		// For In Game
+		// For In Game 
+		
+		//WAIT FOR SEED INPUT
+		if(!isGenerated()){
+			
+			
+		}
+		
 
 		if (isGame && !paused && !restart && isGenerated()) {
 
 			checkMouseDown();
 			// Time based stuff
+			spawner.update();
 
 			// Score Counter every second
 			if (StarTimer.getSinceStart() % 60 == 0) {

@@ -30,7 +30,6 @@ public class SpawnController {
 		songlistener.generate();
 		song = songlistener.getSong();
 		songRateSpeed = 30;
-		System.out.println(song);
 
 	}
 
@@ -51,7 +50,6 @@ public class SpawnController {
 				currentString = song.get(currentLine);
 				currentLine++;
 			} catch (IndexOutOfBoundsException e) {
-				System.out.println("End of song");
 				endsong = true;
 			} catch (Exception e) {
 
@@ -76,12 +74,10 @@ public class SpawnController {
 		
 		for(Star star : dictator.starlist){
 			if(star.getGroup() == 0){
-				System.out.println("asdf");
 				star.setToSize(5);
 				
 			}else{
 				star.setToSize(1);
-				System.out.println("fafafa");
 			}
 		}
 	}
