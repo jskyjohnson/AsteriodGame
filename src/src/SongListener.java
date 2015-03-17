@@ -11,14 +11,18 @@ public class SongListener {
 
 	private ArrayList<String> song = null;
 
-	public SongListener(String thissong) {
+	public SongListener(String songincoming) {
 		// TODO Auto-generated constructor stub
 		song = new ArrayList<String>();
+		
+		
 
 	}
 
 	public void generate() {
 		// TODO Auto-generated method stub
+		
+		
 		File songFile = new File("temp.t");
 		Scanner adder;
 		try {

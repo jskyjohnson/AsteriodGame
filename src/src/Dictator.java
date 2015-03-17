@@ -18,17 +18,7 @@ import javax.swing.*;
  * 
  */
 public class Dictator extends JFrame {
-	// serialID
-
-	/*
-	 * Serial Version
-	 */
 	private static final long serialVersionUID = -3535839203565039672L;
-
-	// Game Constants
-	/*
-	 * Frames per second limit
-	 */
 	private static final int FRAMES = 60;
 
 	private static final int GUN_CAP = 1;
@@ -36,76 +26,44 @@ public class Dictator extends JFrame {
 	public final int BULLET_MAX = 100;
 
 	public double bulletSpeed;
-	
+
 	public final int BULLET_REGEN = 1;
 
 	private int NUMBER_STARS = 100;
 
-	// Game States
-	/*
-	 * If paused boolean
-	 */
 	public boolean paused;
-	/*
-	 * if game is exiting
-	 */
 	private boolean exit;
-	
+
 	private boolean generated;
-	/*
-	 * If restart process boolean
-	 */
 	private boolean restart;
-
-	/*
-	 * If game is over boolean
-	 */
 	public boolean gameOver;
-	/*
-	 * If game is in session
-	 */
 	private boolean isGame;
+	public boolean seedPlay;
+	public boolean musicPlay;
+	public boolean selectDecision;
+	public boolean seedtypeing;
+	public boolean initseedstring;
+	public boolean firstenteredseedreleased;
+	public boolean secondenteredseed;
 
-	// Game Values
-	/*
-	 * Current Score
-	 */
+	public boolean keyListenerOn;
 
 	public int lives = 3;
 	public int score;
 
 	public int bulletCount;
-	/*
-	 * High Score
-	 */
 	public int highScore;
-	// Game Objects and others
-	/*
-	 * ArrayList of Actor Objects in the game
-	 */
 	private List<Actor> actor;
-	/*
-	 * ArrayList of Actor Objects that need to be added to the game
-	 */
 	private List<Actor> toAddActor;
 
 	public String seed;
+	public String song;
 
 	protected ArrayList<Star> starlist;
 
 	public ArrayList<Actor> asteroids;
-	/*
-	 * Clock
-	 */
 	private Watch StarTimer;
-
-	/*
-	 * Size of jframe x
-	 */
 	public final int SIZE_X = 600;
-	/*
-	 * Size of jframe y
-	 */
 	public final int SIZE_Y = 600;
 
 	public Mouse mouse;
@@ -113,24 +71,26 @@ public class Dictator extends JFrame {
 	public boolean mouseDown;
 
 	public Point mousePoint;
-	
+
+	public boolean noselect;
+
 	public boolean entered;
 
-	/*
-	 * Player(s?)
-	 */
+	public boolean Mpress;
+
+	public boolean musicgame;
+
+	public boolean Spress;
+
+	public boolean seedgame;
+
 	protected Player StarCaptain;
-
-	/*
-	 * World Map entitiy
-	 */
-
 	private SpaceMap Constellation;
 
 	public Random rand = new Random();
 
 	public int framesSoFar;
-	
+
 	public SpawnController spawner;
 
 	/**
@@ -138,20 +98,12 @@ public class Dictator extends JFrame {
 	 */
 	public Dictator() {
 		// initialize instance variables
-
 		super();
-		
-
 		bulletCount = 0;
 		framesSoFar = 0;
 		score = 0;
 		bulletSpeed = 5;
-		seed = "Insert String";
-		entered = false;
-		
-		
-		setGenerated(false);
-		
+
 		mouse = new Mouse();
 		setLayout(new BorderLayout());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -188,6 +140,25 @@ public class Dictator extends JFrame {
 		});
 
 		// Add Key Listener, only modifies player
+
+		addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if(seed.length()>1 && e.getKeyCode() == KeyEvent.VK_BACK_SPACE && seedtypeing){
+					String temp = seed;
+					seed = temp.substring(0, temp.length() -1);
+				}
+				if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE
+						|| e.getKeyCode() == KeyEvent.VK_SHIFT
+						){
+					
+				}else if (seedtypeing) {
+					seed += e.getKeyChar();
+					
+				}
+				
+			}
+
+		});
 
 		addKeyListener(new KeyAdapter() {
 
@@ -231,8 +202,18 @@ public class Dictator extends JFrame {
 						pause();
 					}
 				}
+				if (e.getKeyCode() == KeyEvent.VK_M) {
+					if (!checkForRestart() && !seedtypeing) {
+						Mpress = true;
+					}
+				}
+				if (e.getKeyCode() == KeyEvent.VK_S) {
+					if (!checkForRestart() && !seedtypeing) {
+						Spress = true;
+					}
+				}
 				if (e.getKeyCode() == KeyEvent.VK_R) {
-					if (!checkForRestart()) {
+					if (!checkForRestart() && !seedtypeing) {
 						restart();
 					}
 				}
@@ -241,8 +222,8 @@ public class Dictator extends JFrame {
 						exit = true;
 					}
 				}
-				if(e.getKeyCode() == KeyEvent.VK_ENTER){
-					if (!checkForRestart()){
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (!checkForRestart()) {
 						entered = true;
 					}
 				}
@@ -264,9 +245,22 @@ public class Dictator extends JFrame {
 				if (e.getKeyChar() == 'd') {
 					StarCaptain.thrustingRight(false);
 				}
-				if(e.getKeyCode() == KeyEvent.VK_ENTER){
-					if (!checkForRestart()){
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (!checkForRestart()) {
 						entered = false;
+						if (seedtypeing) {
+							firstenteredseedreleased = true;
+						}
+					}
+				}
+				if (e.getKeyCode() == KeyEvent.VK_M) {
+					if (!checkForRestart()) {
+						Mpress = false;
+					}
+				}
+				if (e.getKeyCode() == KeyEvent.VK_S) {
+					if (!checkForRestart()) {
+						Spress = false;
 					}
 				}
 
@@ -274,12 +268,9 @@ public class Dictator extends JFrame {
 
 		});
 
-		
-		
-		//Create Spawn Object on init, to be changed at Start Game methods
-		spawner = new SpawnController(this, seed);
-		
-		
+		// Create Spawn Object on init, to be changed at Start Game methods
+		spawner = new SpawnController(this);
+
 		// Resize
 		pack();
 		setLocationRelativeTo(null);
@@ -302,8 +293,28 @@ public class Dictator extends JFrame {
 		framesSoFar = 0;
 		bulletSpeed = 5;
 		score = 0;
-
 		lives = 3;
+
+		selectDecision = false;
+
+		entered = false;
+		seedtypeing = false;
+		secondenteredseed = false;
+		firstenteredseedreleased = false;
+		setGenerated(false);
+		keyListenerOn = false;
+		initseedstring = false;
+		keyListenerOn = false;
+
+		seedgame = false;
+		musicgame = false;
+		// for Seed Play
+		seed = "Insert String";
+
+		// For Music Play
+
+		song = "Select Song";
+
 		mousePoint = new Point();
 		mouseDown = false;
 
@@ -321,6 +332,7 @@ public class Dictator extends JFrame {
 		isGame = true;
 		gameOver = false;
 		restart = false;
+		noselect = true;
 
 		// Starlist Generation
 		for (int i = 0; i < NUMBER_STARS; i++) {
@@ -336,7 +348,6 @@ public class Dictator extends JFrame {
 		toAddActor.add(StarCaptain);
 
 		// Asteroid Generation (MUST CHANGE)
-
 
 		restart = false;
 		setGenerated(false);
@@ -356,10 +367,9 @@ public class Dictator extends JFrame {
 	 * Starts the game, including game loop and update system.
 	 */
 	private void startGame() {
-		
+
 		restart();
 
-		
 		// game Loop
 		while (true) {
 			long start = System.nanoTime();
@@ -406,23 +416,27 @@ public class Dictator extends JFrame {
 	 */
 	private void updateGame() {
 		// Pre-Game / Post game Options manager?
-		
-		
-		
 		getActor().addAll(toAddActor);
 		toAddActor.clear();
-		
+
 		if (exit) {
 			System.exit(0);
 		}
-		// For In Game 
-		
-		//WAIT FOR SEED INPUT
-		if(!isGenerated()){
-			
-			
+		// For In Game
+
+		// WAIT FOR SEED INPUT
+		if (!isGenerated()) {
+			if (initseedstring) {
+				if(seed.equals("Insert String")){
+					seed = "";
+				}
+				
+				initseedstring = false;
+
+			}
+
+			spawner.update2();
 		}
-		
 
 		if (isGame && !paused && !restart && isGenerated()) {
 
@@ -444,8 +458,6 @@ public class Dictator extends JFrame {
 			}
 			StarTimer.addSinceStart();
 
-			
-
 			framesSoFar++;
 			// ADD FRAMES SO FAR CHECKER HERE, SO THAT IF PAST SONG LIMIT GAME
 			// STOPS
@@ -459,7 +471,7 @@ public class Dictator extends JFrame {
 
 			for (Actor i : actor) {
 				i.update(this);
-				
+
 			}
 
 			// Scans threw all Actor Objects and checks for collisions, then
@@ -539,10 +551,10 @@ public class Dictator extends JFrame {
 		toAddActor.add(actor);
 	}
 
-	
-	public int getTime(){
+	public int getTime() {
 		return StarTimer.getSinceStart();
 	}
+
 	public void crash() {
 		// TODO Auto-generated method stub
 		if (lives == 0) {

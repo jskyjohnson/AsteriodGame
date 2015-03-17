@@ -71,15 +71,72 @@ public class SpaceMap extends JPanel
 		graphics.setColor(Color.WHITE);
 
 		AffineTransform identity = graphics.getTransform();
+
 		
-		if(!dictator.isGenerated()){
-			drawTextCenter("Welcome to Asteroids!", TITLE_FONT, graphics, 0);
-			drawTextCenter("Please type in a seed", SUBTITLE_FONT, graphics, 0);
+		if (!dictator.isGenerated()) {
+			graphics.setTransform(identity); 
+			drawTextCenter("Welcome to Asteroids!", TITLE_FONT, graphics, -100);
+
+			graphics.setTransform(identity);
+			drawTextCenter(
+					"Select either Seed play or Music play, Press S for seed, Press M for music play",
+					SUBTITLE_FONT, graphics, -50);
+
+			// Select Options
+			graphics.setTransform(identity);
+			drawTextCenterOffset("M", SUBTITLE_FONT, graphics, 0, -10);
+
+			graphics.setTransform(identity);
+			drawTextCenterOffset("S", SUBTITLE_FONT, graphics, 0, 10);
 			
-			drawTextCenter(dictator.seed, SUBTITLE_FONT, graphics, 0);
 			
-			if(dictator.entered){
-				dictator.setGenerated(true);
+			//Game Selection (either String or Seed)
+			
+			//first entered select in Seed game select
+			if ( dictator.entered && !dictator.seedtypeing && dictator.seedgame && !dictator.firstenteredseedreleased) {
+				dictator.seedtypeing = true;
+				dictator.firstenteredseedreleased = false;
+				dictator.initseedstring = true;
+			
+			
+			}
+			// Second Entered command
+			if( dictator.seedgame && dictator.seedtypeing && dictator.entered && dictator.firstenteredseedreleased){
+				
+				dictator.seedtypeing = false;
+				
+				
+			}
+			
+			if (dictator.Mpress || dictator.musicgame) {
+				dictator.musicgame = true;
+				dictator.seedgame = false;
+				graphics.setTransform(identity);
+				graphics.drawRect((dictator.SIZE_X / 2) - 22,
+						dictator.SIZE_Y / 2 - 17, 12, 12);
+				
+				dictator.seedtypeing = false;
+				
+			}
+			
+			if (dictator.Spress || dictator.seedgame) {
+				
+				dictator.musicgame = false;
+				dictator.seedgame = true;
+				graphics.setTransform(identity);
+				graphics.drawRect((dictator.SIZE_X / 2) -1,
+						dictator.SIZE_Y / 2 - 17, 12, 12);
+				
+				//Seed Input String!!!!
+				graphics.setTransform(identity);
+				
+				drawTextCenter(dictator.seed, SUBTITLE_FONT, graphics, 100);
+				
+			}
+	
+			if (dictator.entered && !dictator.seedtypeing && (dictator.seedgame || dictator.musicgame)) {
+				dictator.selectDecision = true;
+				
 			}
 		}
 
@@ -161,6 +218,16 @@ public class SpaceMap extends JPanel
 		g.setFont(font);
 		g.drawString(string, dictator.SIZE_X / 2
 				- g.getFontMetrics().stringWidth(string) / 2, dictator.SIZE_Y
-				/ 2 - g.getFontMetrics().stringWidth(string) / 2 + downspace);
+				/ 2 + downspace);
+	}
+
+	private void drawTextCenterOffset(String string, Font font, Graphics2D g,
+			int downSpace, int rightSpace) {
+		g.setColor(Color.WHITE);
+		g.setFont(font);
+		g.drawString(string, dictator.SIZE_X / 2
+				- g.getFontMetrics().stringWidth(string) + rightSpace,
+				dictator.SIZE_Y / 2 - g.getFontMetrics().stringWidth(string)
+						/ 2 + downSpace);
 	}
 }
