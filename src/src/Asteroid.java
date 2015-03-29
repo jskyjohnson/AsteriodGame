@@ -66,7 +66,7 @@ public class Asteroid extends Actor {
 
 	public void draw(Graphics2D g, Dictator d) {
 		g.rotate(rotation);
-		g.setColor(Color.RED);
+		g.setColor(Color.WHITE);
 		g.drawPolygon(polygon);
 		g.fillPolygon(polygon);
 

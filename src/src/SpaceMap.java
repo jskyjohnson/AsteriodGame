@@ -154,7 +154,19 @@ public class SpaceMap extends JPanel
 				graphics.drawLine(-6, 6, 6, 6);
 				graphics.translate(30, 0);
 			}
-
+			
+			//draw level progression rect
+			graphics.setTransform(identity);
+			graphics.translate(0, dictator.SIZE_Y-50);
+			graphics.drawRect((dictator.SIZE_X/2)-(dictator.SIZE_X/8), 0, dictator.SIZE_X/4, 10);
+			
+			graphics.setTransform(identity);
+			graphics.translate(0, dictator.SIZE_Y-50);
+			graphics.setColor(Color.WHITE);
+			double PercentDone = (double)(dictator.lineSoFar)/(dictator.TotalLines)*(dictator.SIZE_X/4);
+			graphics.fillRect((dictator.SIZE_X/2)-(dictator.SIZE_X/8), 0, (int) PercentDone, 10);
+			
+			
 			// draw Bullets
 			graphics.setTransform(identity);
 			graphics.translate(dictator.SIZE_X - 110, dictator.SIZE_Y - 80);
@@ -192,6 +204,14 @@ public class SpaceMap extends JPanel
 			// End Game
 			if (dictator.gameOver) {
 				drawTextCenter("GAME OVER", TITLE_FONT, graphics, 0);
+				drawTextCenter("Press Esc to Exit", SUBTITLE_FONT, graphics,
+						-50);
+				drawTextCenter("Press R to Restart", SUBTITLE_FONT, graphics,
+						-70);
+			}
+			if(dictator.endGame){
+				drawTextCenter("GAME WON! CONGRADULATIONS", TITLE_FONT, graphics, 0);
+				drawTextCenter("Final Score: "+Integer.toString(dictator.score), TITLE_FONT, graphics, 50);
 				drawTextCenter("Press Esc to Exit", SUBTITLE_FONT, graphics,
 						-50);
 				drawTextCenter("Press R to Restart", SUBTITLE_FONT, graphics,

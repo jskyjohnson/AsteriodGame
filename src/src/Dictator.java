@@ -83,6 +83,8 @@ public class Dictator extends JFrame {
 	public boolean Spress;
 
 	public boolean seedgame;
+	
+	public boolean endGame;
 
 	protected Player StarCaptain;
 	private SpaceMap Constellation;
@@ -90,6 +92,10 @@ public class Dictator extends JFrame {
 	public Random rand = null;
 
 	public int framesSoFar;
+	
+	public int lineSoFar = 0;
+	
+	public int TotalLines = 0;
 
 	public SpawnController spawner;
 
@@ -133,7 +139,7 @@ public class Dictator extends JFrame {
 				}
 				// Menu Keys
 				if (e.getKeyCode() == KeyEvent.VK_P) {
-					if (!checkForRestart()) {
+					if (!checkForRestart()&& !seedtypeing) {
 						pause();
 					}
 				}
@@ -225,6 +231,7 @@ public class Dictator extends JFrame {
 
 		seedgame = false;
 		musicgame = false;
+		endGame = false;
 		// for Seed Play
 		seed = "Insert String";
 
@@ -438,10 +445,10 @@ public class Dictator extends JFrame {
 
 			}
 
-			spawner.update2();
+			spawner.update2(this);
 		}
 
-		if (isGame && !paused && !restart && isGenerated()) {
+		if (isGame && !paused && !restart && isGenerated() && !endGame) {
 
 			getActor().addAll(toAddActor);
 			toAddActor.clear();
@@ -450,6 +457,9 @@ public class Dictator extends JFrame {
 			// Time based stuff
 			spawner.update();
 
+			
+			lineSoFar = spawner.getLineSoFar();
+			TotalLines = spawner.getlevelsize();
 			// Score Counter every second
 			if (StarTimer.getSinceStart() % 60 == 0) {
 				score += 10;

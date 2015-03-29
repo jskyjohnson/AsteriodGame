@@ -1,5 +1,6 @@
 package src;
 
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -35,6 +36,10 @@ public class SpawnController {
 
 	}
 
+	public int getLineSoFar() {
+		return currentLine;
+	}
+
 	public void set(int spawnCap, int spawnFreq, int spawn) {
 		this.spawnCap = spawnCap;
 
@@ -50,7 +55,7 @@ public class SpawnController {
 
 	}
 
-	public void update2() {
+	public void update2(Dictator dic) {
 		if (dictator.selectDecision) {
 			if (dictator.musicgame) {
 
@@ -59,14 +64,13 @@ public class SpawnController {
 				songlistener = new SongListener(thisString);
 				songlistener.generate();
 				level = songlistener.getSong();
-				
-			} else if (dictator.seedgame) {
 
+			} else if (dictator.seedgame) {
 				thisString = dictator.seed;
 
-				seedListener = new SeedListener(thisString);
+				seedListener = new SeedListener(thisString, dic);
+
 				level = seedListener.getLevel();
-				dictator.rand = seedListener.getRandom();
 				dictator.addRandoms();
 			}
 			dictator.setGenerated(true);
@@ -77,33 +81,39 @@ public class SpawnController {
 		int RadiusOffSetStart = s.indexOf("AsteroidSize:")
 				+ "AsteroidSize:".length();
 		int RadiusOffSetEnd = s.indexOf(";Position:");
-		int AsteroidRadius = Integer.parseInt(s.substring(
-				RadiusOffSetStart, RadiusOffSetEnd));
+		int AsteroidRadius = Integer.parseInt(s.substring(RadiusOffSetStart,
+				RadiusOffSetEnd));
 
 		return AsteroidRadius;
 	}
 
 	public Position findPosition(String s) {
-		int PositionOffSetStart = s.indexOf(";Position:")	+ ";Position:".length();
+		int PositionOffSetStart = s.indexOf(";Position:")
+				+ ";Position:".length();
 		int PositionOffSetEnd = s.indexOf(",P");
-		int positionx = Integer.parseInt(s.substring(PositionOffSetStart, PositionOffSetEnd));
+		int positionx = Integer.parseInt(s.substring(PositionOffSetStart,
+				PositionOffSetEnd));
 		int PositionOffSetStarty = s.indexOf(",P") + ",P".length();
 		int PositionOffSetEndy = s.indexOf(";Movement:");
-		int positiony = Integer.parseInt(s.substring(PositionOffSetStarty, PositionOffSetEndy));
+		int positiony = Integer.parseInt(s.substring(PositionOffSetStarty,
+				PositionOffSetEndy));
 
 		Position returnPosition = new Position(positionx, positiony);
 		return returnPosition;
 	}
 
 	public Movement findMovement(String s) {
-		int VelocityOffSetStart = s.indexOf(";Movement:")	+ ";Movement:".length();
+		int VelocityOffSetStart = s.indexOf(";Movement:")
+				+ ";Movement:".length();
 		int VelocityOffSetEnd = s.indexOf(",M");
-		int Velocityx = Integer.parseInt(s.substring(VelocityOffSetStart, VelocityOffSetEnd));
-		
+		int Velocityx = Integer.parseInt(s.substring(VelocityOffSetStart,
+				VelocityOffSetEnd));
+
 		int VelocityOffSetStarty = s.indexOf(",M") + ",M".length();
 		int VelocityOffSetEndy = s.indexOf(";AsteroidCallEnd:");
-		int Velocityy = Integer.parseInt(s.substring(VelocityOffSetStarty, VelocityOffSetEndy));
-		
+		int Velocityy = Integer.parseInt(s.substring(VelocityOffSetStarty,
+				VelocityOffSetEndy));
+
 		Movement returnMovement = new Movement(Velocityx, Velocityy);
 		return returnMovement;
 	}
@@ -115,38 +125,40 @@ public class SpawnController {
 				currentString = level.get(currentLine);
 				currentLine++;
 			} catch (IndexOutOfBoundsException e) {
-				endgame = true;
+				dictator.endGame = true;
 			} catch (Exception e) {
 
 			}
 
 			if (currentString.contains("AsteroidsToSpawn")) {
-				String asteroidsToSpawn = currentString.substring("AsteroidsToSpawn:".length(), currentString.indexOf("AsteroidCall:"));
-				
-				
+				String asteroidsToSpawn = currentString.substring(
+						"AsteroidsToSpawn:".length(),
+						currentString.indexOf("AsteroidCall:"));
+
 				int asteroidsToSpawnInt = Integer.parseInt(asteroidsToSpawn);
-				
+
 				for (int i = 1; i <= asteroidsToSpawnInt; i++) {
-					
-					
-					int offsetInt = currentString.indexOf("AsteroidCall:"+Integer.toString(i));
-					
-					int offsetIntEnd = currentString.indexOf("AsteroidCallEnd:"+Integer.toString(i))+"AsteroidCallEnd:".length();
-						
-					
-					String asteroidString = currentString.substring(offsetInt, offsetIntEnd);
-					
-					
+
+					int offsetInt = currentString.indexOf("AsteroidCall:"
+							+ Integer.toString(i));
+
+					int offsetIntEnd = currentString.indexOf("AsteroidCallEnd:"
+							+ Integer.toString(i))
+							+ "AsteroidCallEnd:".length();
+
+					String asteroidString = currentString.substring(offsetInt,
+							offsetIntEnd);
+
 					int AsteroidRadius = findRadius(asteroidString);
-				
+
 					Position pos = findPosition(asteroidString);
-					
+
 					Movement mov = findMovement(asteroidString);
 
-					
-					Asteroid new1 = new Asteroid(dictator, AsteroidRadius,pos, mov);
+					Asteroid new1 = new Asteroid(dictator, AsteroidRadius, pos,
+							mov);
 					dictator.addToAddActors(new1);
-					
+
 				}
 			}
 			// Star Editing
@@ -159,5 +171,10 @@ public class SpawnController {
 				}
 			}
 		}
+	}
+
+	public int getlevelsize() {
+		// TODO Auto-generated method stub
+		return level.size();
 	}
 }
