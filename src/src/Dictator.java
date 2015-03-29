@@ -87,7 +87,7 @@ public class Dictator extends JFrame {
 	protected Player StarCaptain;
 	private SpaceMap Constellation;
 
-	public Random rand = new Random();
+	public Random rand = null;
 
 	public int framesSoFar;
 
@@ -113,89 +113,24 @@ public class Dictator extends JFrame {
 		add(this.Constellation = new SpaceMap(this), BorderLayout.CENTER);
 		setContentPane(Constellation);
 
-		addMouseMotionListener(new MouseAdapter() {
-			public void mouseMoved(MouseEvent e) {
-				mouse.update(e.getPoint());
-			}
-
-			public void mouseDragged(MouseEvent e) {
-				mouse.update(e.getPoint());
-				mousePoint = e.getPoint();
-				mouseDown = true;
-			}
-
-		});
-
-		addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				mouse.update(e.getPoint());
-				mousePoint = e.getPoint();
-				mouseDown = true;
-			}
-
-			public void mouseReleased(MouseEvent e) {
-				mouseDown = false;
-				mouse.update(e.getPoint());
-			}
-		});
-
-		// Add Key Listener, only modifies player
+		// Create Spawn Object on init, to be changed at Start Game methods
+		spawner = new SpawnController(this);
 
 		addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
-				if(seed.length()>1 && e.getKeyCode() == KeyEvent.VK_BACK_SPACE && seedtypeing){
+				if (seed.length() > 1
+						&& e.getKeyCode() == KeyEvent.VK_BACK_SPACE
+						&& seedtypeing) {
 					String temp = seed;
-					seed = temp.substring(0, temp.length() -1);
+					seed = temp.substring(0, temp.length() - 1);
 				}
-				if(e.getKeyCode() == KeyEvent.VK_BACK_SPACE
-						|| e.getKeyCode() == KeyEvent.VK_SHIFT
-						){
-					
-				}else if (seedtypeing) {
+				if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE
+						|| e.getKeyCode() == KeyEvent.VK_SHIFT) {
+
+				} else if (seedtypeing) {
 					seed += e.getKeyChar();
-					
+
 				}
-				
-			}
-
-		});
-
-		addKeyListener(new KeyAdapter() {
-
-			// key mapping for press
-			public void keyPressed(KeyEvent e) {
-
-				// Controlling Keys
-				if (e.getKeyCode() == KeyEvent.VK_A) {
-					if (!checkForRestart()) {
-						StarCaptain.thrustingLeft(true);
-					} else {
-						StarCaptain.thrustingLeft(false);
-					}
-				}
-				if (e.getKeyCode() == KeyEvent.VK_D) {
-					if (!checkForRestart()) {
-						StarCaptain.thrustingRight(true);
-					} else {
-						StarCaptain.thrustingRight(false);
-					}
-				}
-				if (e.getKeyCode() == KeyEvent.VK_S) {
-					if (!checkForRestart()) {
-						StarCaptain.thrustingDown(true);
-					} else {
-						StarCaptain.thrustingDown(false);
-					}
-				}
-				if (e.getKeyCode() == KeyEvent.VK_W) {
-					if (!checkForRestart()) {
-						StarCaptain.thrustingUp(true);
-
-					} else {
-						StarCaptain.thrustingUp(false);
-					}
-				}
-
 				// Menu Keys
 				if (e.getKeyCode() == KeyEvent.VK_P) {
 					if (!checkForRestart()) {
@@ -229,22 +164,8 @@ public class Dictator extends JFrame {
 				}
 
 			}
-
-			// key mapping for release
-			public void keyReleased(KeyEvent e) {
-
-				if (e.getKeyChar() == 'a') {
-					StarCaptain.thrustingLeft(false);
-				}
-				if (e.getKeyChar() == 'w') {
-					StarCaptain.thrustingUp(false);
-				}
-				if (e.getKeyChar() == 's') {
-					StarCaptain.thrustingDown(false);
-				}
-				if (e.getKeyChar() == 'd') {
-					StarCaptain.thrustingRight(false);
-				}
+			
+			public void keyReleased(KeyEvent e){
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (!checkForRestart()) {
 						entered = false;
@@ -263,13 +184,9 @@ public class Dictator extends JFrame {
 						Spress = false;
 					}
 				}
-
 			}
 
 		});
-
-		// Create Spawn Object on init, to be changed at Start Game methods
-		spawner = new SpawnController(this);
 
 		// Resize
 		pack();
@@ -312,13 +229,19 @@ public class Dictator extends JFrame {
 		seed = "Insert String";
 
 		// For Music Play
-
 		song = "Select Song";
 
 		mousePoint = new Point();
 		mouseDown = false;
 
+		// Set star timer to refresh at every frame value
+		this.StarTimer = new Watch(FRAMES);
+
 		spawner.reset();
+
+	}
+
+	public void addRandoms() {
 		this.setActor(new ArrayList<Actor>());
 		this.toAddActor = new ArrayList<Actor>();
 		this.StarCaptain = new Player(this);
@@ -326,8 +249,6 @@ public class Dictator extends JFrame {
 		this.asteroids = new ArrayList<Actor>();
 		restartGame();
 
-		// Set star timer to refresh at every frame value
-		this.StarTimer = new Watch(FRAMES);
 		// this.Constellation = new SpaceMap(this);
 		isGame = true;
 		gameOver = false;
@@ -351,6 +272,90 @@ public class Dictator extends JFrame {
 
 		restart = false;
 		setGenerated(false);
+
+		addMouseMotionListener(new MouseAdapter() {
+			public void mouseMoved(MouseEvent e) {
+				mouse.update(e.getPoint());
+			}
+
+			public void mouseDragged(MouseEvent e) {
+				mouse.update(e.getPoint());
+				mousePoint = e.getPoint();
+				mouseDown = true;
+			}
+
+		});
+
+		addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				mouse.update(e.getPoint());
+				mousePoint = e.getPoint();
+				mouseDown = true;
+			}
+
+			public void mouseReleased(MouseEvent e) {
+				mouseDown = false;
+				mouse.update(e.getPoint());
+			}
+		});
+
+		// Add Key Listener, only modifies player
+
+		addKeyListener(new KeyAdapter() {
+
+			// key mapping for press
+			public void keyPressed(KeyEvent e) {
+
+				// Controlling Keys
+				if (e.getKeyCode() == KeyEvent.VK_A) {
+					if (!checkForRestart()) {
+						StarCaptain.thrustingLeft(true);
+					} else {
+						StarCaptain.thrustingLeft(false);
+					}
+				}
+				if (e.getKeyCode() == KeyEvent.VK_D) {
+					if (!checkForRestart()) {
+						StarCaptain.thrustingRight(true);
+					} else {
+						StarCaptain.thrustingRight(false);
+					}
+				}
+				if (e.getKeyCode() == KeyEvent.VK_S) {
+					if (!checkForRestart()) {
+						StarCaptain.thrustingDown(true);
+					} else {
+						StarCaptain.thrustingDown(false);
+					}
+				}
+				if (e.getKeyCode() == KeyEvent.VK_W) {
+					if (!checkForRestart()) {
+						StarCaptain.thrustingUp(true);
+
+					} else {
+						StarCaptain.thrustingUp(false);
+					}
+				}
+			}
+
+			// key mapping for release
+			public void keyReleased(KeyEvent e) {
+
+				if (e.getKeyChar() == 'a') {
+					StarCaptain.thrustingLeft(false);
+				}
+				if (e.getKeyChar() == 'w') {
+					StarCaptain.thrustingUp(false);
+				}
+				if (e.getKeyChar() == 's') {
+					StarCaptain.thrustingDown(false);
+				}
+				if (e.getKeyChar() == 'd') {
+					StarCaptain.thrustingRight(false);
+				}
+			}
+
+		});
 	}
 
 	private void pause() {
@@ -416,8 +421,6 @@ public class Dictator extends JFrame {
 	 */
 	private void updateGame() {
 		// Pre-Game / Post game Options manager?
-		getActor().addAll(toAddActor);
-		toAddActor.clear();
 
 		if (exit) {
 			System.exit(0);
@@ -427,10 +430,10 @@ public class Dictator extends JFrame {
 		// WAIT FOR SEED INPUT
 		if (!isGenerated()) {
 			if (initseedstring) {
-				if(seed.equals("Insert String")){
+				if (seed.equals("Insert String")) {
 					seed = "";
 				}
-				
+
 				initseedstring = false;
 
 			}
@@ -439,6 +442,9 @@ public class Dictator extends JFrame {
 		}
 
 		if (isGame && !paused && !restart && isGenerated()) {
+
+			getActor().addAll(toAddActor);
+			toAddActor.clear();
 
 			checkMouseDown();
 			// Time based stuff

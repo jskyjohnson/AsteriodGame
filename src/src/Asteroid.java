@@ -22,31 +22,14 @@ public class Asteroid extends Actor {
 
 	public Asteroid(Dictator d, int initRad, Position a, Movement b) {
 		super(d, a, b, initRad);
-		if (toClose(d.getPlayerPosition(), a)&&!isSplit) {
-			
-			Position a2 = a;
-			a2.setX(a.getX()*d.getPlayerPosition().getX());
-			a2.setY(a.getY()*d.getPlayerPosition().getY());
-			
-			this.setPosition(a2);
-		}
 
-		numberPoints = d.rand.nextInt(10) + 1;
+		numberPoints = d.rand.nextInt(10) + 2;
 		this.rotation = d.rand.nextDouble() * (2 * Math.PI);
 		this.rotationspeed = d.rand.nextDouble();
 		this.polygon = makeAsteroid(radius);
 		rotation = 0;
 		this.frame = 0;
 
-	}
-
-	private boolean toClose(Position playerPosition, Position a) {
-		// TODO Auto-generated method stub
-		if (Math.abs(playerPosition.getX() - a.getX()) < 40&&Math.abs(playerPosition.getY() - a.getY()) < 40) {
-			return true;
-		}
-		
-		return false;
 	}
 
 	private Polygon makeAsteroid(double radius) {
@@ -90,19 +73,20 @@ public class Asteroid extends Actor {
 	}
 
 	public void collided(Actor a, Dictator dic) {
-		if (a.getClass() != Player.class) {
-			if (a.getClass() != Asteroid.class) {
+		if (!(a instanceof Player)) {
+			if (!(a instanceof Asteroid)) {
 				if (radius / 2 >= 4) {
 					Asteroid new1 = split(dic);
 					Asteroid new2 = split(dic);
 					dic.addToAddActors(new1);
 					dic.addToAddActors(new2);
+					//0b01111000001011100011010
 				}
 				remove();
 				dic.score += 100;
 			}
 
-		} else if (a.getClass() == Player.class) {
+		} else if (a instanceof Player) {
 			remove();
 		}
 	}
