@@ -1,6 +1,7 @@
 package src;
 
 import java.awt.Component;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -25,6 +26,8 @@ public class SpawnController {
 	public boolean endgame;
 
 	public String thisString;
+	
+	public File thisFile;
 
 	public SpawnController(Dictator dic) {
 		this.dictator = dic;
@@ -32,7 +35,7 @@ public class SpawnController {
 		spawnCap = 100;
 		currentLine = 0;
 		currentString = "asdf";
-		listenRateSpeed = 30;
+		listenRateSpeed = 100;
 
 	}
 
@@ -59,17 +62,15 @@ public class SpawnController {
 		if (dictator.selectDecision) {
 			if (dictator.musicgame) {
 
-				thisString = dictator.song;
-
-				songlistener = new SongListener(thisString);
-				songlistener.generate();
-				level = songlistener.getSong();
+				thisFile = dictator.song;
+				songlistener = new SongListener(thisFile, dic);
+				level = songlistener.getLevel();
+				listenRateSpeed = songlistener.getRate();
+				dictator.addRandoms();
 
 			} else if (dictator.seedgame) {
 				thisString = dictator.seed;
-
 				seedListener = new SeedListener(thisString, dic);
-
 				level = seedListener.getLevel();
 				dictator.addRandoms();
 			}
@@ -129,7 +130,7 @@ public class SpawnController {
 			} catch (Exception e) {
 
 			}
-
+			
 			if (currentString.contains("AsteroidsToSpawn")) {
 				String asteroidsToSpawn = currentString.substring(
 						"AsteroidsToSpawn:".length(),

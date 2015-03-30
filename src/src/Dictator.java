@@ -7,8 +7,21 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.net.URI;
+import java.net.URL;
 import java.util.List;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+ import javax.sound.sampled.Clip;
+
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 
 /**
@@ -45,7 +58,10 @@ public class Dictator extends JFrame {
 	public boolean initseedstring;
 	public boolean firstenteredseedreleased;
 	public boolean secondenteredseed;
-
+	public boolean waitingforChoose;
+	public boolean musicstart;
+	public boolean musicplaying;
+	
 	public boolean keyListenerOn;
 
 	public int lives = 3;
@@ -57,7 +73,7 @@ public class Dictator extends JFrame {
 	private List<Actor> toAddActor;
 
 	public String seed;
-	public String song;
+	public File song;
 
 	protected ArrayList<Star> starlist;
 
@@ -79,6 +95,10 @@ public class Dictator extends JFrame {
 	public boolean Mpress;
 
 	public boolean musicgame;
+	
+	public boolean songselected;
+	
+	public boolean jFileChoseOpen;
 
 	public boolean Spress;
 
@@ -98,6 +118,8 @@ public class Dictator extends JFrame {
 	public int TotalLines = 0;
 
 	public SpawnController spawner;
+	
+	public MediaPlayer songplayer;
 
 	/**
 	 * Constructor for objects of class Dictator
@@ -105,6 +127,8 @@ public class Dictator extends JFrame {
 	public Dictator() {
 		// initialize instance variables
 		super();
+		new javafx.embed.swing.JFXPanel();
+		
 		bulletCount = 0;
 		framesSoFar = 0;
 		score = 0;
@@ -175,7 +199,7 @@ public class Dictator extends JFrame {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (!checkForRestart()) {
 						entered = false;
-						if (seedtypeing) {
+						if (seedtypeing && !musicgame) {
 							firstenteredseedreleased = true;
 						}
 					}
@@ -217,17 +241,26 @@ public class Dictator extends JFrame {
 		bulletSpeed = 5;
 		score = 0;
 		lives = 3;
+		
+		if(musicgame == true){
+			songplayer.pause();
+		}
 
 		selectDecision = false;
 
 		entered = false;
 		seedtypeing = false;
 		secondenteredseed = false;
+		songselected = false;
 		firstenteredseedreleased = false;
+		waitingforChoose = false;
 		setGenerated(false);
 		keyListenerOn = false;
 		initseedstring = false;
 		keyListenerOn = false;
+		jFileChoseOpen = false;
+		musicstart = false;
+		musicplaying = false;
 
 		seedgame = false;
 		musicgame = false;
@@ -236,8 +269,9 @@ public class Dictator extends JFrame {
 		seed = "Insert String";
 
 		// For Music Play
-		song = "Select Song";
-
+		song = null;
+		
+		
 		mousePoint = new Point();
 		mouseDown = false;
 
@@ -254,7 +288,6 @@ public class Dictator extends JFrame {
 		this.StarCaptain = new Player(this);
 		this.starlist = new ArrayList<Star>();
 		this.asteroids = new ArrayList<Actor>();
-		restartGame();
 
 		// this.Constellation = new SpaceMap(this);
 		isGame = true;
@@ -275,11 +308,18 @@ public class Dictator extends JFrame {
 
 		toAddActor.add(StarCaptain);
 
-		// Asteroid Generation (MUST CHANGE)
-
 		restart = false;
 		setGenerated(false);
 
+		if(musicgame){
+			
+			new javafx.embed.swing.JFXPanel();
+			String uriString = song.toURI().toString();
+			songplayer = new MediaPlayer(new Media(uriString));
+			songplayer.pause();
+			songplayer.play();
+		}
+		
 		addMouseMotionListener(new MouseAdapter() {
 			public void mouseMoved(MouseEvent e) {
 				mouse.update(e.getPoint());
@@ -369,10 +409,18 @@ public class Dictator extends JFrame {
 		if (paused == false) {
 			this.paused = true;
 			isGame = false;
+			if(musicgame){
+				songplayer.pause();
+			}
 		} else if (paused == true) {
 			this.paused = false;
 			isGame = true;
+			if(musicgame){
+				songplayer.play();
+			}
 		}
+		
+		
 	}
 
 	/*
@@ -419,10 +467,6 @@ public class Dictator extends JFrame {
 		isGame = false;
 	}
 
-	private void resetLists() {
-
-	}
-
 	/*
 	 * the update loop for the game
 	 */
@@ -443,6 +487,9 @@ public class Dictator extends JFrame {
 
 				initseedstring = false;
 
+			}
+			
+			if(waitingforChoose){
 			}
 
 			spawner.update2(this);
@@ -537,9 +584,6 @@ public class Dictator extends JFrame {
 	/*
 	 * restart loop for the game,
 	 */
-	private void restartGame() {
-		resetLists();
-	}
 
 	/*
 	 * main methods, starts the entire program

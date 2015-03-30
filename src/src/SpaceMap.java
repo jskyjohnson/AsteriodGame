@@ -7,7 +7,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
+import java.io.File;
+
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * 
@@ -46,6 +51,8 @@ public class SpaceMap extends JPanel
 	 */
 	private Dictator dictator;
 
+	public JFileChooser chooser;
+	
 	/*
 	 * Constructor for SpaceMap
 	 */
@@ -90,22 +97,43 @@ public class SpaceMap extends JPanel
 			drawTextCenterOffset("S", SUBTITLE_FONT, graphics, 0, 10);
 			
 			
-			//Game Selection (either String or Seed)
 			
+			if (dictator.musicgame && dictator.entered && !dictator.songselected && !dictator.jFileChoseOpen&&!dictator.waitingforChoose){
+			
+				dictator.jFileChoseOpen = true;
+				dictator.waitingforChoose = true;
+				
+				   String choosertitle = "Pick a Song";
+				
+				chooser = new JFileChooser(); 
+			    chooser.setCurrentDirectory(new java.io.File("."));
+			    chooser.setDialogTitle(choosertitle);
+			    chooser.setAcceptAllFileFilterUsed(false);
+			    
+			    FileNameExtensionFilter filter = new FileNameExtensionFilter("MPEG3 songs", "mp3");
+		        chooser.addChoosableFileFilter(filter);
+			    
+			    if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { 
+			      dictator.song = chooser.getSelectedFile();
+			      
+			      dictator.songselected = true;
+			      }
+			    else {
+			      
+			      dictator.waitingforChoose = false;
+			      dictator.entered = false;
+			      dictator.jFileChoseOpen= false;
+			      }
+			}
 			//first entered select in Seed game select
 			if ( dictator.entered && !dictator.seedtypeing && dictator.seedgame && !dictator.firstenteredseedreleased) {
 				dictator.seedtypeing = true;
 				dictator.firstenteredseedreleased = false;
 				dictator.initseedstring = true;
-			
-			
 			}
 			// Second Entered command
 			if( dictator.seedgame && dictator.seedtypeing && dictator.entered && dictator.firstenteredseedreleased){
-				
 				dictator.seedtypeing = false;
-				
-				
 			}
 			
 			if (dictator.Mpress || dictator.musicgame) {
@@ -116,6 +144,10 @@ public class SpaceMap extends JPanel
 						dictator.SIZE_Y / 2 - 17, 12, 12);
 				
 				dictator.seedtypeing = false;
+				
+				graphics.setTransform(identity);
+				
+				drawTextCenter("Press enter to open song chooser", SUBTITLE_FONT, graphics, 100);
 				
 			}
 			
@@ -134,7 +166,7 @@ public class SpaceMap extends JPanel
 				
 			}
 	
-			if (dictator.entered && !dictator.seedtypeing && (dictator.seedgame || dictator.musicgame)) {
+			if (dictator.entered && !dictator.seedtypeing && (dictator.seedgame || dictator.musicgame)&&!dictator.jFileChoseOpen || (dictator.musicgame&&dictator.songselected)) {
 				dictator.selectDecision = true;
 				
 			}
