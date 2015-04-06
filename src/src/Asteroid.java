@@ -22,7 +22,7 @@ public class Asteroid extends Actor {
 	public Asteroid(Dictator d, int initRad, Position a, Movement b) {
 		super(d, a, b, initRad);
 
-		numberPoints = d.rand.nextInt(10) + 2;
+		numberPoints = d.rand.nextInt(10) + 3;
 		this.rotation = d.rand.nextDouble() * (2 * Math.PI);
 		this.rotationspeed = d.rand.nextDouble();
 		this.polygon = makeAsteroid(radius);
@@ -83,6 +83,15 @@ public class Asteroid extends Actor {
 				}
 				remove();
 				dic.score += 100;
+			}else if(a instanceof Asteroid){
+				
+//				double thismovx = a.getMovement().getX()+this.getMovement().getX();
+//				double thismovy = a.getMovement().getY()+this.getMovement().getY();
+//				Asteroid comebin = new Asteroid(dic, (int) (a.getRadius()+this.getRadius()),new Position(this.getPosition()),new Movement(thismovx,thismovy));
+//				remove();
+//				a.remove();
+//				
+//				dic.addToAddActors(comebin);
 			}
 
 		} else if (a instanceof Player) {

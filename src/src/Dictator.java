@@ -14,7 +14,7 @@ import java.util.List;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
- import javax.sound.sampled.Clip;
+import javax.sound.sampled.Clip;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -36,11 +36,11 @@ public class Dictator extends JFrame {
 
 	private static final int GUN_CAP = 1;
 
-	public final int BULLET_MAX = 100;
+	public final int BULLET_MAX = 8;
 
 	public double bulletSpeed;
 
-	public final int BULLET_REGEN = 1;
+	public final int BULLET_REGEN = 10;
 
 	private int NUMBER_STARS = 100;
 
@@ -61,7 +61,7 @@ public class Dictator extends JFrame {
 	public boolean waitingforChoose;
 	public boolean musicstart;
 	public boolean musicplaying;
-	
+
 	public boolean keyListenerOn;
 
 	public int lives = 3;
@@ -95,15 +95,15 @@ public class Dictator extends JFrame {
 	public boolean Mpress;
 
 	public boolean musicgame;
-	
+
 	public boolean songselected;
-	
+
 	public boolean jFileChoseOpen;
 
 	public boolean Spress;
 
 	public boolean seedgame;
-	
+
 	public boolean endGame;
 
 	protected Player StarCaptain;
@@ -112,13 +112,13 @@ public class Dictator extends JFrame {
 	public Random rand = null;
 
 	public int framesSoFar;
-	
+
 	public int lineSoFar = 0;
-	
+
 	public int TotalLines = 0;
 
 	public SpawnController spawner;
-	
+
 	public MediaPlayer songplayer;
 
 	/**
@@ -128,11 +128,11 @@ public class Dictator extends JFrame {
 		// initialize instance variables
 		super();
 		new javafx.embed.swing.JFXPanel();
-		
+
 		bulletCount = 0;
 		framesSoFar = 0;
 		score = 0;
-		bulletSpeed = 5;
+		bulletSpeed = 1;
 
 		mouse = new Mouse();
 		setLayout(new BorderLayout());
@@ -163,7 +163,7 @@ public class Dictator extends JFrame {
 				}
 				// Menu Keys
 				if (e.getKeyCode() == KeyEvent.VK_P) {
-					if (!checkForRestart()&& !seedtypeing) {
+					if (!checkForRestart() && !seedtypeing) {
 						pause();
 					}
 				}
@@ -194,8 +194,8 @@ public class Dictator extends JFrame {
 				}
 
 			}
-			
-			public void keyReleased(KeyEvent e){
+
+			public void keyReleased(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (!checkForRestart()) {
 						entered = false;
@@ -238,11 +238,11 @@ public class Dictator extends JFrame {
 	private void restart() {
 		bulletCount = 0;
 		framesSoFar = 0;
-		bulletSpeed = 5;
+		bulletSpeed = 10;
 		score = 0;
 		lives = 3;
-		
-		if(musicgame == true){
+
+		if (musicgame == true) {
 			songplayer.pause();
 		}
 
@@ -270,8 +270,7 @@ public class Dictator extends JFrame {
 
 		// For Music Play
 		song = null;
-		
-		
+
 		mousePoint = new Point();
 		mouseDown = false;
 
@@ -311,15 +310,15 @@ public class Dictator extends JFrame {
 		restart = false;
 		setGenerated(false);
 
-		if(musicgame){
-			
+		if (musicgame) {
+
 			new javafx.embed.swing.JFXPanel();
 			String uriString = song.toURI().toString();
 			songplayer = new MediaPlayer(new Media(uriString));
 			songplayer.pause();
 			songplayer.play();
 		}
-		
+
 		addMouseMotionListener(new MouseAdapter() {
 			public void mouseMoved(MouseEvent e) {
 				mouse.update(e.getPoint());
@@ -409,28 +408,25 @@ public class Dictator extends JFrame {
 		if (paused == false) {
 			this.paused = true;
 			isGame = false;
-			if(musicgame){
+			if (musicgame) {
 				songplayer.pause();
 			}
 		} else if (paused == true) {
 			this.paused = false;
 			isGame = true;
-			if(musicgame){
+			if (musicgame) {
 				songplayer.play();
 			}
 		}
-		
-		
+
 	}
 
 	/*
 	 * Starts the game, including game loop and update system.
 	 */
 	private void startGame() {
-
 		restart();
-
-		// game Loop
+		// Game Loop
 		while (true) {
 			long start = System.nanoTime();
 
@@ -440,12 +436,10 @@ public class Dictator extends JFrame {
 				updateGame();
 			}
 
+			// render
 			Constellation.repaint();
-			// Renders SpaceMap Class
 
-			/*
-			 * Waits for tick to finish
-			 */
+			//frame stall
 			long frameerror = FRAMES - (System.nanoTime() - start);
 			if (frameerror > 0) {
 				try {
@@ -454,8 +448,6 @@ public class Dictator extends JFrame {
 					e.printStackTrace();
 				}
 			}
-
-			// Game Over Sequence / menus and stuff
 
 		}
 	}
@@ -471,75 +463,55 @@ public class Dictator extends JFrame {
 	 * the update loop for the game
 	 */
 	private void updateGame() {
-		// Pre-Game / Post game Options manager?
-
 		if (exit) {
 			System.exit(0);
 		}
 		// For In Game
 
-		// WAIT FOR SEED INPUT
+		// Waiting for game selection
 		if (!isGenerated()) {
 			if (initseedstring) {
 				if (seed.equals("Insert String")) {
 					seed = "";
 				}
-
 				initseedstring = false;
-
-			}
-			
-			if(waitingforChoose){
 			}
 
+			if (waitingforChoose) {
+			}
 			spawner.update2(this);
 		}
 
 		if (isGame && !paused && !restart && isGenerated() && !endGame) {
-
+			
 			getActor().addAll(toAddActor);
 			toAddActor.clear();
-
 			checkMouseDown();
 			// Time based stuff
 			spawner.update();
-
-			
 			lineSoFar = spawner.getLineSoFar();
 			TotalLines = spawner.getlevelsize();
 			// Score Counter every second
 			if (StarTimer.getSinceStart() % 60 == 0) {
 				score += 10;
 			}
-
 			// Bullet Regeneration
 			if (StarTimer.getSinceStart() % BULLET_REGEN == 0) {
 				if (BULLET_MAX - bulletCount < BULLET_MAX) {
 					bulletCount--;
 				}
-
 			}
 			StarTimer.addSinceStart();
-
 			framesSoFar++;
-			// ADD FRAMES SO FAR CHECKER HERE, SO THAT IF PAST SONG LIMIT GAME
-			// STOPS
-
 			// Update Methods for Stars (Twinckles
 			for (Star i : starlist) {
 				i.update(this);
 			}
-
 			// Updates All actors Players,Astroids, Bullets,
-
 			for (Actor i : actor) {
 				i.update(this);
-
 			}
-
-			// Scans threw all Actor Objects and checks for collisions, then
-			// does
-			// the handle collision method if true
+			// Scans through all current actor objects for collisions, by comparing if two objects have collided
 			for (int i = 0; i < getActor().size(); i++) {
 				Actor temp1 = getActor().get(i);
 				for (int i2 = i + 1; i2 < getActor().size(); i2++) {
@@ -547,11 +519,9 @@ public class Dictator extends JFrame {
 					if (i != i2 && temp1.colliding(temp2)) {
 						temp1.collided(temp2, this);
 						temp2.collided(temp1, this);
-
 					}
 				}
 			}
-
 			Iterator<Actor> iter = actor.iterator();
 			while (iter.hasNext()) {
 				Actor lookingat = iter.next();
@@ -590,8 +560,8 @@ public class Dictator extends JFrame {
 	 */
 	public static void main(String[] args) {
 
-		Dictator StalinMussoliniHitlerAndyMao = new Dictator();
-		StalinMussoliniHitlerAndyMao.startGame();
+		Dictator newAsteroidsGame = new Dictator();
+		newAsteroidsGame.startGame();
 
 	}
 

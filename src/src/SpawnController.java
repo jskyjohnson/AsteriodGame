@@ -26,7 +26,7 @@ public class SpawnController {
 	public boolean endgame;
 
 	public String thisString;
-	
+
 	public File thisFile;
 
 	public SpawnController(Dictator dic) {
@@ -130,7 +130,7 @@ public class SpawnController {
 			} catch (Exception e) {
 
 			}
-			
+
 			if (currentString.contains("AsteroidsToSpawn")) {
 				String asteroidsToSpawn = currentString.substring(
 						"AsteroidsToSpawn:".length(),
@@ -153,7 +153,13 @@ public class SpawnController {
 					int AsteroidRadius = findRadius(asteroidString);
 
 					Position pos = findPosition(asteroidString);
-
+					if(toClose(dictator.getPlayerPosition(), pos)){
+						Position a2 = pos;
+						a2.setX(pos.getX()*dictator.getPlayerPosition().getX());
+						a2.setY(pos.getY()*dictator.getPlayerPosition().getY());
+						pos = a2;
+					}
+					
 					Movement mov = findMovement(asteroidString);
 
 					Asteroid new1 = new Asteroid(dictator, AsteroidRadius, pos,
@@ -172,6 +178,16 @@ public class SpawnController {
 				}
 			}
 		}
+	}
+
+	private boolean toClose(Position playerPosition, Position a) {
+
+		if (Math.abs(playerPosition.getX() - a.getX()) < 80
+				&& Math.abs(playerPosition.getY() - a.getY()) < 80) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public int getlevelsize() {
