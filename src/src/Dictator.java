@@ -49,8 +49,8 @@ public class Dictator extends JFrame {
 
 	private boolean generated;
 	private boolean restart;
-	public boolean gameOver;
 	private boolean isGame;
+	public boolean gameOver;
 	public boolean seedPlay;
 	public boolean musicPlay;
 	public boolean selectDecision;
@@ -61,7 +61,15 @@ public class Dictator extends JFrame {
 	public boolean waitingforChoose;
 	public boolean musicstart;
 	public boolean musicplaying;
-
+	public boolean noselect;
+	public boolean entered;
+	public boolean Mpress;
+	public boolean musicgame;
+	public boolean songselected;
+	public boolean jFileChoseOpen;
+	public boolean Spress;
+	public boolean seedgame;
+	public boolean endGame;
 	public boolean keyListenerOn;
 
 	public int lives = 3;
@@ -87,24 +95,6 @@ public class Dictator extends JFrame {
 	public boolean mouseDown;
 
 	public Point mousePoint;
-
-	public boolean noselect;
-
-	public boolean entered;
-
-	public boolean Mpress;
-
-	public boolean musicgame;
-
-	public boolean songselected;
-
-	public boolean jFileChoseOpen;
-
-	public boolean Spress;
-
-	public boolean seedgame;
-
-	public boolean endGame;
 
 	protected Player StarCaptain;
 	private SpaceMap Constellation;
